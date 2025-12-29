@@ -1,0 +1,8089 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🚀 نظام إدارة الوقود المتطور</title>
+<style>
+  /* ========== متغيرات النظام الفاتح ========== */
+  :root {
+    /* نظام ألوان فاتح عصري */
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --primary-dark: #2563eb;
+    --secondary: #8b5cf6;
+    --accent: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    
+    /* نظام ألوان فاتحة */
+    --light: #ffffff;
+    --lighter: #f8fafc;
+    --light-gray: #f1f5f9;
+    --light-gray-2: #e2e8f0;
+    --light-gray-3: #cbd5e1;
+    
+    /* ألوان النص */
+    --text-dark: #1e293b;
+    --text-gray: #64748b;
+    --text-light: #94a3b8;
+    
+    /* خلفيات */
+    --bg-body: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-input: #f8fafc;
+    --bg-modal: #ffffff;
+    
+    /* ظلال */
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.04);
+    --shadow-neon: 0 0 20px rgba(59, 130, 246, 0.2);
+    
+    /* أبعاد */
+    --radius: 12px;
+    --radius-sm: 6px;
+    --radius-lg: 20px;
+    --radius-xl: 30px;
+    
+    /* أحجام الخطوط */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    
+    /* تحولات */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== إعادة تعيين وإعدادات أساسية ========== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+    background: var(--bg-body);
+    color: var(--text-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* خلفية متدرجة مع تأثيرات */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* ========== تأثيرات الحواف ========== */
+  .border-gradient {
+    position: relative;
+    border: 2px solid transparent;
+    background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                linear-gradient(135deg, var(--primary), var(--accent)) border-box;
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+  }
+
+  .shadow-glow:hover {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
+  }
+
+  /* ========== شاشة تسجيل الدخول ========== */
+  .login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: var(--transition);
+    padding: 1rem;
+  }
+
+  .login-container.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-30px);
+  }
+
+  .login-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 1000px;
+    height: 600px;
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--light-gray-2);
+  }
+
+  .login-side {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" opacity="0.1"><path d="M0,0 L100,0 L100,100 Z" fill="white"/></svg>');
+    background-size: cover;
+  }
+
+  .login-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .login-logo {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+
+  .login-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff 0%, #e0e7ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .login-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--text-base);
+    margin-bottom: 3rem;
+  }
+
+  .login-features {
+    margin-top: 2rem;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .feature i {
+    color: var(--accent);
+    font-size: 1.25rem;
+  }
+
+  .login-form {
+    width: 100%;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1rem;
+    background: var(--bg-input);
+    border: 2px solid var(--light-gray-2);
+    border-radius: var(--radius);
+    color: var(--text-dark);
+    font-size: var(--text-base);
+    transition: var(--transition);
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-neon);
+    background: var(--bg-card);
+  }
+
+  .password-toggle {
+    position: absolute;
+    left: 1rem;
+    top: 55%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: var(--text-base);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-neon);
+  }
+
+  .login-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-top: 1rem;
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    color: #dc2626;
+    font-size: var(--text-sm);
+  }
+
+  /* ========== المحتوى الرئيسي مع السايدبار الجديد ========== */
+  .app-container {
+    display: flex;
+    min-height: 100vh;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ========== الشريط الجانبي ========== */
+  .sidebar {
+    width: 280px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+    transition: var(--transition);
+  }
+
+  .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--light-gray-2);
+    text-align: center;
+  }
+
+  .sidebar-logo {
+    max-width: 160px;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .sidebar-subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-gray);
+  }
+
+  .nav-menu {
+    flex: 1;
+    padding: 1.5rem 0;
+    overflow-y: auto;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: var(--transition);
+    border-right: 3px solid transparent;
+    margin: 0.25rem 0;
+    cursor: pointer;
+  }
+
+  .nav-item:hover {
+    background: var(--light-gray);
+    border-right-color: var(--primary-light);
+    color: var(--primary);
+  }
+
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-right-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .nav-item-text {
+    flex: 1;
+  }
+
+  .nav-badge {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--light-gray-2);
+    background: var(--light-gray);
+  }
+
+  .user-info-sidebar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .user-avatar-sidebar {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: white;
+    box-shadow: var(--shadow);
+  }
+
+  .user-details-sidebar {
+    flex: 1;
+  }
+
+  .user-name-sidebar {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: var(--text-sm);
+  }
+
+  .user-role-sidebar {
+    font-size: var(--text-xs);
+    color: var(--primary);
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .logout-btn-sidebar {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius);
+    color: var(--danger);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .logout-btn-sidebar:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: var(--danger);
+    transform: translateY(-2px);
+  }
+
+  /* ========== المحتوى الرئيسي ========== */
+  .main-content {
+    flex: 1;
+    margin-right: 280px;
+    padding: 1.5rem;
+    transition: var(--transition);
+  }
+
+  .page-header {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .page-title i {
+    color: var(--primary);
+  }
+
+  .page-subtitle {
+    color: var(--text-gray);
+    font-size: var(--text-sm);
+    margin-top: 0.25rem;
+  }
+
+  .page-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* ========== محتوى الصفحات ========== */
+  .page-content {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ========== الصفحات المختلفة ========== */
+  .dashboard-page {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid var(--light-gray-2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+
+  .stat-icon {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  .stat-value {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    color: var(--text-gray);
+    font-size: var(--text-sm);
+  }
+
+  .stat-change {
+    font-size: var(--text-xs);
+    margin-top: 0.5rem;
+  }
+
+  .stat-change.positive {
+    color: var(--success);
+  }
+
+  .stat-change.negative {
+    color: var(--danger);
+  }
+
+  /* ========== النماذج ========== */
+  .form-section {
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--light-gray-2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .section-title i {
+    color: var(--primary);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    position: relative;
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+
+  .form-label i {
+    color: var(--primary);
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: var(--bg-input);
+    border: 2px solid var(--light-gray-2);
+    border-radius: var(--radius);
+    color: var(--text-dark);
+    font-size: var(--text-base);
+    transition: var(--transition);
+    outline: none;
+  }
+
+  .form-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-input[readonly] {
+    background: var(--light-gray);
+    border-color: var(--light-gray-2);
+    color: var(--text-gray);
+  }
+
+  /* ========== الأزرار ========== */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .btn:hover::before {
+    opacity: 1;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+  }
+
+  .btn-warning {
+    background: linear-gradient(135deg, var(--warning), #d97706);
+    color: white;
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+    color: white;
+  }
+
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), #0891b2);
+    color: white;
+  }
+
+  .btn-info {
+    background: linear-gradient(135deg, var(--info), #2563eb);
+    color: white;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: var(--text-xs);
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: var(--text-base);
+  }
+
+  /* ========== الجداول ========== */
+  .table-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--light-gray-2);
+    margin-top: 2rem;
+  }
+
+  .table-header {
+    padding: 1.5rem;
+    background: var(--light-gray);
+    border-bottom: 1px solid var(--light-gray-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .table-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .table-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .data-table thead {
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  }
+
+  .data-table th {
+    padding: 1.25rem;
+    text-align: right;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    font-size: var(--text-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--light-gray-2);
+    transition: var(--transition);
+  }
+
+  .data-table tbody tr:hover {
+    background: var(--light-gray);
+    transform: translateX(2px);
+  }
+
+  .data-table td {
+    padding: 1.25rem;
+    color: var(--text-dark);
+    vertical-align: middle;
+  }
+
+  /* ========== تصميم المركبات ========== */
+  .vehicle-type {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .type-petrol {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+  }
+
+  .type-diesel {
+    background: linear-gradient(135deg, var(--accent), #0891b2);
+    color: white;
+  }
+
+  .type-generator {
+    background: linear-gradient(135deg, var(--warning), #d97706);
+    color: white;
+  }
+
+  /* ========== البادجات ========== */
+  .badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 50px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .badge-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+  }
+
+  .badge-warning {
+    background: linear-gradient(135deg, var(--warning), #d97706);
+    color: white;
+  }
+
+  .badge-danger {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+    color: white;
+  }
+
+  .badge-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+  }
+
+  .badge-info {
+    background: linear-gradient(135deg, var(--info), #2563eb);
+    color: white;
+  }
+
+  /* ========== التنبيهات ========== */
+  #alertsContainer {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+  }
+
+  .alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideInLeft 0.3s ease-out;
+    box-shadow: var(--shadow);
+    font-size: var(--text-sm);
+    border-right: 4px solid;
+    backdrop-filter: blur(10px);
+    background: var(--bg-card);
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .alert-success {
+    border-color: var(--success);
+    color: #059669;
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .alert-error {
+    border-color: var(--danger);
+    color: #dc2626;
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  .alert-warning {
+    border-color: var(--warning);
+    color: #d97706;
+    background: rgba(245, 158, 11, 0.1);
+  }
+
+  .alert-info {
+    border-color: var(--info);
+    color: #2563eb;
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  /* ========== النماذج المنبثقة ========== */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .modal-content {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--light-gray-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+
+  .modal-close {
+    background: var(--light-gray);
+    border: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .modal-close:hover {
+    background: var(--light-gray-2);
+    color: var(--danger);
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  /* ========== مؤشرات التحميل ========== */
+  .loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 3px solid rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ========== فاصل ========== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--light-gray-2), transparent);
+    margin: 2rem 0;
+  }
+
+  /* ========== حالة النقر ========== */
+  .clickable {
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .clickable:hover {
+    opacity: 0.8;
+  }
+
+  /* ========== تحسينات الطباعة ========== */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    body {
+      background: white !important;
+      color: black !important;
+    }
+    
+    .page-content {
+      box-shadow: none !important;
+      border: 1px solid #ddd !important;
+    }
+  }
+
+  /* ========== التجاوب ========== */
+  @media (max-width: 1200px) {
+    .sidebar {
+      width: 250px;
+    }
+    
+    .main-content {
+      margin-right: 250px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .sidebar {
+      transform: translateX(100%);
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+    }
+    
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    
+    .main-content {
+      margin-right: 0;
+    }
+    
+    .mobile-menu-toggle {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-page {
+      grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    
+    .page-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .table-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 1rem;
+      font-size: var(--text-xs);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-content {
+      padding: 1.5rem;
+    }
+    
+    .btn-group {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+
+  /* ========== زر القائمة المتحركة للجوال ========== */
+  .mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 101;
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 992px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+  }
+
+  /* ========== شريط التمرير ========== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  }
+
+  /* ========== حالات خاصة ========== */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-gray);
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    color: var(--light-gray-3);
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state-description {
+    font-size: var(--text-base);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* ========== تحسينات إضافية ========== */
+  .progress-bar {
+    height: 8px;
+    background: var(--light-gray-2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+  }
+
+  .tab-container {
+    margin: 1rem 0;
+  }
+
+  .tab-header {
+    display: flex;
+    border-bottom: 2px solid var(--light-gray-2);
+    margin-bottom: 1rem;
+  }
+
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .tab-button.active {
+    color: var(--primary);
+  }
+
+  .tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--light-gray-2);
+  }
+
+  .card-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .card-body {
+    color: var(--text-gray);
+  }
+
+  .timeline {
+    position: relative;
+    padding-right: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 2px;
+    background: var(--light-gray-2);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    right: -2.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  .timeline-content {
+    background: var(--light-gray);
+    padding: 1rem;
+    border-radius: var(--radius);
+  }
+
+  .timeline-date {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-description {
+    font-size: var(--text-sm);
+    color: var(--text-gray);
+  }
+
+  /* ========== تحسينات خاصة بالأقسام ========== */
+  .vehicle-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vehicle-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary);
+  }
+
+  .vehicle-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .vehicle-card-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .vehicle-card-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .vehicle-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+  }
+
+  .vehicle-info-item i {
+    color: var(--primary);
+    width: 1rem;
+    text-align: center;
+  }
+
+  .vehicle-info-label {
+    color: var(--text-gray);
+    font-weight: 500;
+  }
+
+  .vehicle-info-value {
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+
+  .fuel-record-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+  }
+
+  .fuel-record-card:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .fuel-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--light-gray-2);
+  }
+
+  .fuel-record-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .fuel-record-id {
+    font-size: var(--text-sm);
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .fuel-record-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .fuel-record-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .fuel-record-label {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+    font-weight: 500;
+  }
+
+  .fuel-record-value {
+    font-size: var(--text-base);
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+
+  .fuel-record-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-gray-2);
+  }
+
+  .status-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+
+  .status-active {
+    background: var(--success);
+    animation: pulse 2s infinite;
+  }
+
+  .status-inactive {
+    background: var(--danger);
+  }
+
+  .status-warning {
+    background: var(--warning);
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-chip {
+    padding: 0.5rem 1rem;
+    background: var(--light-gray);
+    border: 1px solid var(--light-gray-2);
+    border-radius: 20px;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-chip:hover {
+    background: var(--light-gray-2);
+  }
+
+  .filter-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .filter-chip i {
+    font-size: 0.875rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card-mini {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .stat-icon-mini {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-value-mini {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label-mini {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  .search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1rem;
+    background: var(--bg-input);
+    border: 2px solid var(--light-gray-2);
+    border-radius: var(--radius);
+    font-size: var(--text-base);
+    transition: var(--transition);
+  }
+
+  .search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1.25rem;
+  }
+
+  .data-summary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .summary-item {
+    text-align: center;
+  }
+
+  .summary-value {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+  }
+
+  .summary-label {
+    font-size: var(--text-sm);
+    opacity: 0.9;
+  }
+
+  .export-options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .export-btn {
+    padding: 0.5rem 1rem;
+    background: var(--light-gray);
+    border: 1px solid var(--light-gray-2);
+    border-radius: var(--radius);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .export-btn:hover {
+    background: var(--light-gray-2);
+  }
+
+  .export-btn i {
+    font-size: 0.875rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .pagination-btn {
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--light-gray-2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: var(--text-sm);
+  }
+
+  .pagination-btn:hover {
+    background: var(--light-gray);
+  }
+
+  .pagination-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .loading-skeleton {
+    background: linear-gradient(90deg, var(--light-gray-2) 25%, var(--light-gray) 50%, var(--light-gray-2) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .skeleton-text {
+    height: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+  }
+
+  .skeleton-title {
+    height: 1.5rem;
+    width: 60%;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+  }
+
+  .skeleton-card {
+    height: 120px;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+  }
+
+  /* ========== تحسينات إضافية للنماذج ========== */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--light-gray-2);
+  }
+
+  .form-actions .btn {
+    min-width: 120px;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-group .btn {
+    border-radius: 0;
+  }
+
+  .btn-group .btn:first-child {
+    border-radius: var(--radius) 0 0 var(--radius) var(--radius);
+  }
+
+  .btn-group .btn:last-child {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .btn-group .btn:only-child {
+    border-radius: var(--radius);
+  }
+
+  /* ========== تأثيرات hover محسنة ========== */
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ========== حالة التحميل للنماذج ========== */
+  .btn.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+  }
+
+  .btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* ========== تحسينات للجداول ========== */
+  .table-actions-cell {
+    white-space: nowrap;
+  }
+
+  .table-actions-cell .btn {
+    margin: 0 0.25rem;
+  }
+
+  /* ========== تحسينات للإدخال ========== */
+  .input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group .form-input {
+    flex: 1;
+  }
+
+  .input-group .input-addon {
+    background: var(--light-gray);
+    border: 2px solid var(--light-gray-2);
+    border-right: none;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius) 0 0 var(--radius) var(--radius);
+    color: var(--text-gray);
+    font-size: var(--text-sm);
+  }
+
+  .input-group .form-input {
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .input-group .input-icon-right {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-gray);
+    pointer-events: none;
+  }
+
+  /* ========== رسائل التحقق من النماذج ========== */
+  .form-error {
+    color: var(--danger);
+    font-size: var(--text-xs);
+    margin-top: 0.25rem;
+    display: none;
+  }
+
+  .form-error.show {
+    display: block;
+  }
+
+  .form-input.error {
+    border-color: var(--danger);
+  }
+
+  /* ========== تحسينات للبطاقات ========== */
+  .card-hover {
+    transition: var(--transition);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
+  /* ========== تحسينات للقوائم ========== */
+  .list-group {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--light-gray-2);
+  }
+
+  .list-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--light-gray-2);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .list-item:last-child {
+    border-bottom: none;
+  }
+
+  .list-item:hover {
+    background: var(--light-gray);
+  }
+
+  .list-item.active {
+    background: rgba(59, 130, 246, 0.1);
+    border-right: 3px solid var(--primary);
+  }
+
+  /* ========== تحسينات إضافية للجداول ========== */
+
+  /* صورة المستخدم الصغيرة */
+  .user-avatar-small {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+  }
+
+  .user-avatar-small:hover {
+    transform: scale(1.1);
+  }
+
+  /* تحسين عرض الجداول */
+  .data-table tbody tr {
+    transition: var(--transition);
+  }
+
+  .data-table tbody tr:hover {
+    background: var(--light-gray);
+    transform: translateX(2px);
+  }
+
+  /* تحسين البادجات */
+  .badge {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+  }
+
+  .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* تحسين الأزرار الصغيرة */
+  .btn-sm {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+  }
+
+  .btn-sm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* تحسين عرض التاريخ */
+  .date-display {
+    background: var(--light-gray);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    color: var(--text-dark);
+    border-right: 3px solid var(--primary);
+  }
+
+  /* تحسين حالة الحقول الفارغة */
+  .empty-value {
+    color: var(--text-gray);
+    font-style: italic;
+    font-size: var(--text-xs);
+  }
+
+  /* تحسين عرض المعلومات */
+  .info-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+  }
+
+  /* تحسين عرض التكلفة */
+  .cost-cell {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+    color: white;
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  }
+
+  /* تحسين عرض الملاحظات */
+  .notes-cell {
+    max-width: 120px;
+    padding: 6px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+    font-size: var(--text-xs);
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 3px solid var(--warning);
+  }
+
+  /* تحسين عرض المستخدم */
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .user-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: var(--text-sm);
+  }
+
+  .user-email {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  /* تحسين عرض الدور */
+  .role-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+  }
+
+  /* تحسين عرض الحالة */
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+  }
+
+  /* تحسين عرض التواريخ */
+  .date-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 8px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+  }
+
+  .date-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: var(--text-sm);
+  }
+
+  .date-label {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  .date-expiry {
+    color: var(--warning);
+    font-weight: 600;
+  }
+
+  /* تحسينات إضافية للتجاوب */
+  @media (max-width: 1400px) {
+    .data-table {
+      font-size: 12px;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 10px 8px;
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .data-table {
+      min-width: 1200px;
+    }
+  }
+  
+  /* شريط التمرير المخصص */
+  .table-responsive::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 4px;
+  }
+  
+  /* تحسين عرض التقارير */
+  .report-table-container {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .report-table-container table {
+    width: 100%;
+    min-width: 1000px;
+  }
+  
+  /* أزرار التحكم في التقارير */
+  .report-controls {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+  
+  .report-controls .btn {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  /* تحسينات للطباعة */
+  @media print {
+    .report-controls,
+    .no-print,
+    .mobile-menu-toggle,
+    .sidebar,
+    .page-actions {
+      display: none !important;
+    }
+    
+    .main-content {
+      margin-right: 0 !important;
+      padding: 0 !important;
+    }
+    
+    .page-content {
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+    
+    .data-table {
+      font-size: 10px !important;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 4px 6px !important;
+    }
+  }
+
+  /* ========== تحسينات إضافية لسجل العمليات ========== */
+  .logs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .log-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--light-gray-2);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .log-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .log-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+  }
+
+  .log-card.diesel::before {
+    background: var(--accent);
+  }
+
+  .log-card.generator::before {
+    background: var(--warning);
+  }
+
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--light-gray-2);
+  }
+
+  .log-operation-id {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .log-date-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .log-date {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  .log-time {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  .log-vehicle-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .log-plate {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .log-vehicle-type {
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+
+  .log-driver {
+    font-size: var(--text-sm);
+    color: var(--text-gray);
+    margin-bottom: 0.75rem;
+  }
+
+  .log-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .log-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .log-detail-label {
+    font-size: var(--text-xs);
+    color: var(--text-gray);
+  }
+
+  .log-detail-value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .log-cost {
+    background: linear-gradient(135deg, var(--danger), #dc2626);
+    color: white;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .log-cost-label {
+    font-size: var(--text-xs);
+    opacity: 0.9;
+  }
+
+  .log-cost-value {
+    font-size: var(--text-lg);
+    font-weight: 700;
+  }
+
+  .log-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .log-action-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .log-action-btn.preview {
+    background: var(--primary);
+    color: white;
+  }
+
+  .log-action-btn.preview:hover {
+    background: var(--primary-dark);
+  }
+
+  .log-action-btn.print {
+    background: var(--success);
+    color: white;
+  }
+
+  .log-action-btn.print:hover {
+    background: #059669;
+  }
+
+  .log-action-btn.delete {
+    background: var(--danger);
+    color: white;
+  }
+
+  .log-action-btn.delete:hover {
+    background: #dc2626;
+  }
+
+  /* تحسينات إضافية للتقارير */
+  .report-stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .report-stat-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--light-gray-2);
+    text-align: center;
+  }
+
+  .report-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.25rem;
+  }
+
+  .report-stat-value {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .report-stat-label {
+    font-size: var(--text-sm);
+    color: var(--text-gray);
+  }
+
+  .report-chart-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--light-gray-2);
+    margin-bottom: 2rem;
+  }
+
+  .report-chart-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .report-chart-placeholder {
+    height: 300px;
+    background: var(--light-gray);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-gray);
+  }
+
+  /* تحسينات للفلاتر اليومية */
+  .date-filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--light-gray-2);
+  }
+
+  .date-filter-tab {
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .date-filter-tab:hover {
+    color: var(--primary);
+  }
+
+  .date-filter-tab.active {
+    color: var(--primary);
+  }
+
+  .date-filter-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--primary);
+  }
+
+  /* تحسينات للطباعة */
+  .print-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4f46e5;
+  }
+  
+  .print-header img {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .print-header h1 {
+    color: #4f46e5;
+    margin-bottom: 5px;
+  }
+  
+  .print-header .subtitle {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .print-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .summary-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .summary-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4f46e5;
+    margin-bottom: 5px;
+  }
+  
+  .summary-label {
+    font-size: 12px;
+    color: #64748b;
+  }
+  
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .print-table th {
+    background: #4f46e5;
+    color: white;
+    padding: 12px 8px;
+    text-align: right;
+    font-size: 12px;
+    border: 1px solid #4338ca;
+  }
+  
+  .print-table td {
+    padding: 10px 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 11px;
+  }
+  
+  .print-footer {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px dashed #cbd5e1;
+    text-align: center;
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  /* ========== تحسينات إضافية لسجل العمليات ========== */
+  .logs-table-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--light-gray-2);
+    margin-top: 2rem;
+  }
+
+  .logs-table-header {
+    padding: 1.5rem;
+    background: var(--light-gray);
+    border-bottom: 1px solid var(--light-gray-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logs-table-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .logs-table-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .logs-table thead {
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  }
+
+  .logs-table th {
+    padding: 1.25rem;
+    text-align: right;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    font-size: var(--text-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .logs-table tbody tr {
+    border-bottom: 1px solid var(--light-gray-2);
+    transition: var(--transition);
+  }
+
+  .logs-table tbody tr:hover {
+    background: var(--light-gray);
+    transform: translateX(2px);
+  }
+
+  .logs-table td {
+    padding: 1.25rem;
+    color: var(--text-dark);
+    vertical-align: middle;
+  }
+
+  /* تحسينات للفلاتر المتقدمة */
+  .advanced-filters {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-col {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  /* تحسينات لعرض الفاتورة الجديدة */
+  .invoice-preview {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    border: 1px solid var(--light-gray-2);
+    box-shadow: var(--shadow);
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .invoice-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--light-gray-2);
+  }
+
+  .invoice-title {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .invoice-number {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .invoice-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .invoice-section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-gray-2);
+  }
+
+  .invoice-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .invoice-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .invoice-detail-label {
+    font-size: var(--text-sm);
+    color: var(--text-gray);
+    font-weight: 600;
+  }
+
+  .invoice-detail-value {
+    font-size: var(--text-base);
+    color: var(--text-dark);
+    font-weight: 700;
+  }
+
+  .invoice-total {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .invoice-total-label {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .invoice-total-value {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+  }
+
+  .invoice-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- شاشة تسجيل الدخول -->
+  <div id="loginContainer" class="login-container">
+    <div class="login-grid">
+      <div class="login-side">
+        <img src="https://adiyatdist.com/wp-content/uploads/2024/12/logo-horizontal.png" 
+             alt="شعار شركة عاديات" class="login-logo">
+        <h1 class="login-title">نظام إدارة الوقود</h1>
+        <p class="login-subtitle">الحل الأمثل لإدارة أسطول المركبات والوقود</p>
+        
+        <div class="login-features">
+          <div class="feature">
+            <i class="fas fa-bolt"></i>
+            <span>إدارة ذكية للمركبات والوقود</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-chart-line"></i>
+            <span>سجل العمليات والإحصائيات</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-shield-alt"></i>
+            <span>نظام آمن ومشفر</span>
+          </div>
+          <div class="feature">
+            <i class="fas fa-mobile-alt"></i>
+            <span>يدعم جميع الأجهزة</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="login-content">
+        <h2 style="font-size: var(--text-2xl); font-weight: 700; color: var(--text-dark); margin-bottom: 2rem;">
+          <i class="fas fa-sign-in-alt" style="color: var(--primary); margin-left: 0.5rem;"></i>
+          تسجيل الدخول للنظام
+        </h2>
+        
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني</label>
+            <div class="input-group">
+              <input type="email" id="loginEmail" class="form-input" placeholder="example@adiyat.com" required>
+              <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">كلمة المرور</label>
+            <div class="input-group">
+              <input type="password" id="loginPassword" class="form-input" placeholder="********" required>
+              <div class="input-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <button type="button" class="password-toggle" id="togglePassword">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div id="loginError" class="login-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>البريد الإلكتروني أو كلمة المرور غير صحيحة</span>
+          </div>
+          
+          <button type="submit" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i>
+            تسجيل الدخول
+          </button>
+        </form>
+        
+        <div style="margin-top: 2rem; text-align: center; color: var(--text-gray); font-size: var(--text-sm);">
+          <i class="fas fa-code" style="margin-left: 0.5rem;"></i>
+          Developed by Ammar Kanna
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي مع السايدبار الجديد -->
+  <div id="mainContent" class="app-container hidden">
+    <!-- زر القائمة المتحركة للجوال -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- الشريط الجانبي -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://adiyatdist.com/wp-content/uploads/2024/12/logo-horizontal.png" 
+             alt="شعار شركة عاديات" class="sidebar-logo">
+        <div class="sidebar-title">نظام إدارة الوقود</div>
+        <div class="sidebar-subtitle">شركة عاديات للتسويق والتوزيع</div>
+      </div>
+      
+      <div class="nav-menu">
+        <div class="nav-item active" data-page="dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          <span class="nav-item-text">لوحة التحكم</span>
+        </div>
+        
+        <div class="nav-item" data-page="vehicles" data-permission="manageVehicles">
+          <i class="fas fa-car"></i>
+          <span class="nav-item-text">إدارة المركبات</span>
+          <span class="nav-badge" id="vehiclesCount">0</span>
+        </div>
+        
+        <div class="nav-item" data-page="fuel" data-permission="dispenseFuel">
+          <i class="fas fa-gas-pump"></i>
+          <span class="nav-item-text">صرف الوقود</span>
+        </div>
+        
+        <div class="nav-item" data-page="history" data-permission="viewReports">
+          <i class="fas fa-history"></i>
+          <span class="nav-item-text">سجل العمليات</span>
+          <span class="nav-badge" id="logsCount">0</span>
+        </div>
+        
+        <div class="nav-item" data-page="users" data-permission="manageUsers" id="usersMenuItem">
+          <i class="fas fa-users-cog"></i>
+          <span class="nav-item-text">إدارة المستخدمين</span>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <div class="user-info-sidebar">
+          <div class="user-avatar-sidebar" id="userAvatarSidebar">م</div>
+          <div class="user-details-sidebar">
+            <div class="user-name-sidebar" id="userNameSidebar">محمد أحمد</div>
+            <div class="user-role-sidebar" id="userRoleSidebar">مدير</div>
+          </div>
+        </div>
+        
+        <button class="logout-btn-sidebar" id="logoutBtnSidebar">
+          <i class="fas fa-sign-out-alt"></i>
+          تسجيل الخروج
+        </button>
+      </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content">
+      <!-- لوحة التحكم -->
+      <div id="dashboardPage" class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-tachometer-alt"></i>
+              لوحة التحكم
+            </h1>
+            <p class="page-subtitle">مرحباً بك في نظام إدارة الوقود المتطور</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="refreshDashboard()">
+              <i class="fas fa-sync-alt"></i>
+              تحديث
+            </button>
+          </div>
+        </div>
+        
+        <div class="dashboard-page">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-value" id="dashboardVehiclesCount">0</div>
+            <div class="stat-label">المركبات المسجلة</div>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i>
+              <span>زيادة هذا الشهر</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-gas-pump"></i>
+            </div>
+            <div class="stat-value" id="dashboardFuelToday">0</div>
+            <div class="stat-label">لترات اليوم</div>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i>
+              <span>زيادة عن الأمس</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-value" id="dashboardCostToday">0</div>
+            <div class="stat-label">تكلفة اليوم</div>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i>
+              <span>زيادة عن الأمس</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value" id="dashboardEfficiency">0%</div>
+            <div class="stat-label">كفاءة الاستهلاك</div>
+            <div class="stat-change positive">
+              <i class="fas fa-arrow-up"></i>
+              <span>تحسن هذا الشهر</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- صفحة إدارة المركبات -->
+      <div id="vehiclesPage" class="page-content hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-car"></i>
+              إدارة المركبات
+            </h1>
+            <p class="page-subtitle">إضافة وتحديث معلومات المركبات والسائقين</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-success" id="btnAddVehicle" data-permission="manageVehicles">
+              <i class="fas fa-save"></i>
+              حفظ المركبة
+            </button>
+            <button class="btn btn-warning" id="btnClearVehicleForm" data-permission="manageVehicles">
+              <i class="fas fa-eraser"></i>
+              مسح النموذج
+            </button>
+            <button class="btn btn-primary" onclick="loadVehiclesList()" data-permission="manageVehicles">
+              <i class="fas fa-sync-alt"></i>
+              تحديث القائمة
+            </button>
+          </div>
+        </div>
+        
+        <!-- إحصائيات سريعة -->
+        <div class="stats-grid">
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-car"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="totalVehicles">0</div>
+              <div class="stat-label-mini">إجمالي المركبات</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-gas-pump"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="activeVehicles">0</div>
+              <div class="stat-label-mini">مركبات نشطة</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="totalDrivers">0</div>
+              <div class="stat-label-mini">إجمالي السائقين</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-building"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="totalBranches">0</div>
+              <div class="stat-label-mini">عدد الأقسام</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- نموذج إضافة/تعديل مركبة -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-edit"></i>
+            إضافة/تعديل مركبة
+          </h2>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-car-alt"></i> لوحة المركبة
+              </label>
+              <input type="text" id="v_plate" class="form-input" placeholder="مثال: خ و 1234">
+              <div class="form-error" id="v_plate_error">يرجى إدخال لوحة المركبة</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user"></i> اسم السائق
+              </label>
+              <input type="text" id="v_driver" class="form-input" placeholder="مثال: محمد علي">
+              <div class="form-error" id="v_driver_error">يرجى إدخال اسم السائق</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-phone"></i> رقم الهاتف
+              </label>
+              <input type="tel" id="v_phone" class="form-input" placeholder="مثال: 0912345678">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-tachometer-alt"></i> العداد الأول
+              </label>
+              <input type="number" id="v_init_odo" class="form-input" placeholder="مثال: 150000">
+              <div class="form-error" id="v_init_odo_error">يرجى إدخال العداد الأول</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-gas-pump"></i> معدل الاستهلاك
+              </label>
+              <input type="number" id="v_kpl" class="form-input" placeholder="مثال: 8.5" step="0.1">
+              <div class="form-error" id="v_kpl_error">يرجى إدخال معدل الاستهلاك</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-car"></i> نوع المركبة
+              </label>
+              <select id="v_type" class="form-select">
+                <option value="">اختر النوع</option>
+                <option value="بنزين">بنزين</option>
+                <option value="جاز">جاز</option>
+                <option value="مولد">مولد</option>
+              </select>
+              <div class="form-error" id="v_type_error">يرجى اختيار نوع المركبة</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-building"></i> القسم
+              </label>
+              <select id="v_branch" class="form-select">
+                <option value="">اختر القسم</option>
+                <option value="الخرطوم">الخرطوم</option>
+                <option value="عطبرة">عطبرة</option>
+                <option value="شندي">شندي</option>
+                <option value="دنقلا">دنقلا</option>
+                <option value="الدبة">الدبة</option>
+                <option value="بورتسودان">بورتسودان</option>
+                <option value="كسلا">كسلا</option>
+                <option value="القضارف">القضارف</option>
+                <option value="مدني">مدني</option>
+                <option value="كوستي">كوستي</option>
+                <option value="الابيض">الابيض</option>
+                <option value="سنجة">سنجة</option>
+              </select>
+              <div class="form-error" id="v_branch_error">يرجى اختيار القسم</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-info-circle"></i> حالة المركبة
+              </label>
+              <select id="v_status" class="form-select">
+                <option value="نشط">نشط</option>
+                <option value="غير نشط">غير نشط</option>
+                <option value="صيانة">صيانة</option>
+                <option value="مستأجر">مستأجر</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-calendar"></i> تاريخ التسجيل
+              </label>
+              <input type="date" id="v_registration_date" class="form-input">
+            </div>
+            
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">
+                <i class="fas fa-sticky-note"></i> ملاحظات
+              </label>
+              <textarea id="v_notes" class="form-textarea" placeholder="أي ملاحظات إضافية عن المركبة"></textarea>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-success" id="btnSaveVehicle" data-permission="manageVehicles">
+              <i class="fas fa-save"></i>
+              حفظ المركبة
+            </button>
+            <button type="button" class="btn btn-warning" id="btnUpdateVehicle" style="display: none;" data-permission="manageVehicles">
+              <i class="fas fa-edit"></i>
+              تحديث المركبة
+            </button>
+            <button type="button" class="btn btn-ghost" id="btnCancelEdit" style="display: none;" data-permission="manageVehicles">
+              <i class="fas fa-times"></i>
+              إلغاء التعديل
+            </button>
+          </div>
+        </div>
+        
+        <!-- البحث والفلاتر -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-filter"></i>
+            البحث والتصفية
+          </h2>
+          
+          <div class="search-box">
+            <input type="text" id="searchVehicleInput" class="search-input" placeholder="ابحث باللوحة أو اسم السائق أو القسم">
+            <i class="fas fa-search search-icon"></i>
+          </div>
+          
+          <div class="filter-chips">
+            <div class="filter-chip active" data-filter="all">
+              <i class="fas fa-th"></i>
+              الكل
+            </div>
+            <div class="filter-chip" data-filter="بنزين">
+              <i class="fas fa-gas-pump"></i>
+              بنزين
+            </div>
+            <div class="filter-chip" data-filter="جاز">
+              <i class="fas fa-oil-can"></i>
+              جاز
+            </div>
+            <div class="filter-chip" data-filter="مولد">
+              <i class="fas fa-bolt"></i>
+              مولد
+            </div>
+            <div class="filter-chip" data-filter="نشط">
+              <i class="fas fa-check-circle"></i>
+              نشط
+            </div>
+            <div class="filter-chip" data-filter="غير نشط">
+              <i class="fas fa-pause-circle"></i>
+              غير نشط
+            </div>
+          </div>
+        </div>
+        
+        <!-- عرض المركبات -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-list"></i>
+            قائمة المركبات
+          </h2>
+          
+          <div class="export-options">
+            <button class="export-btn" onclick="exportVehicles()" data-permission="manageVehicles">
+              <i class="fas fa-file-excel"></i>
+              تصدير Excel
+            </button>
+            <button class="export-btn" onclick="printVehicles()" data-permission="manageVehicles">
+              <i class="fas fa-print"></i>
+              طباعة
+            </button>
+            <button class="export-btn" onclick="importVehicles()" data-permission="manageVehicles">
+              <i class="fas fa-file-import"></i>
+              استيراد
+            </button>
+          </div>
+          
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th><i class="fas fa-car-alt"></i> اللوحة</th>
+                    <th><i class="fas fa-user"></i> السائق</th>
+                    <th><i class="fas fa-phone"></i> الهاتف</th>
+                    <th><i class="fas fa-building"></i> القسم</th>
+                    <th><i class="fas fa-car"></i> النوع</th>
+                    <th><i class="fas fa-tachometer-alt"></i> العداد</th>
+                    <th><i class="fas fa-gas-pump"></i> كم/لتر</th>
+                    <th><i class="fas fa-info-circle"></i> الحالة</th>
+                    <th><i class="fas fa-calendar"></i> التسجيل</th>
+                    <th class="no-print"><i class="fas fa-cogs"></i> إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="listVehicles">
+                  <tr id="loadingVehiclesRow">
+                    <td colspan="11">
+                      <div class="loader">
+                        <div class="spinner"></div>
+                        <div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل المركبات...</div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- التصفح -->
+          <div class="pagination" id="vehiclesPagination">
+            <button class="pagination-btn" onclick="changeVehiclesPage('prev')">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn" onclick="changeVehiclesPage('next')">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- صفحة صرف الوقود - المعدلة -->
+      <div id="fuelPage" class="page-content hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-gas-pump"></i>
+              صرف الوقود
+            </h1>
+            <p class="page-subtitle">تسجيل عمليات صرف الوقود للمركبات</p>
+          </div>
+        </div>
+        
+        <!-- ملخص سريع -->
+        <div class="data-summary">
+          <div class="summary-item">
+            <div class="summary-value" id="todayFuelCount">0</div>
+            <div class="summary-label">عمليات اليوم</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="todayFuelLiters">0</div>
+            <div class="summary-label">لترات اليوم</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="todayFuelCost">0</div>
+            <div class="summary-label">تكلفة اليوم</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="activeFuelVehicles">0</div>
+            <div class="summary-label">مركبات نشطة</div>
+          </div>
+        </div>
+        
+        <!-- البحث السريع عن المركبة -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-search"></i>
+            البحث السريع عن المركبة
+          </h2>
+          
+          <div class="search-box">
+            <input type="text" id="quickVehicleSearch" class="search-input" placeholder="أدخل لوحة المركبة للبحث السريع">
+            <i class="fas fa-search search-icon"></i>
+          </div>
+          
+          <!-- نتائج البحث السريع -->
+          <div id="quickSearchResults" style="margin-top: 1rem; display: none;">
+            <!-- سيتم عرض النتائج هنا -->
+          </div>
+        </div>
+        
+        <!-- تحميل بيانات المركبة -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-download"></i>
+            تحميل بيانات المركبة
+          </h2>
+          
+          <div class="form-grid">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label class="form-label">
+                <i class="fas fa-search"></i> بحث عن المركبة
+              </label>
+              <input type="text" id="f_plate" class="form-input" placeholder="أدخل لوحة المركبة">
+              <div class="form-error" id="f_plate_error">يرجى إدخال لوحة المركبة</div>
+            </div>
+            
+            <div class="form-group" style="grid-column: 1 / -1; text-align: center;">
+              <button class="btn btn-accent btn-lg" id="btnLoadVehicle" data-permission="dispenseFuel">
+                <i class="fas fa-download"></i>
+                تحميل البيانات
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- قسم بيانات المركبة المحملة -->
+        <div id="sectionLoaded" class="hidden" style="margin-top: 1.5rem;">
+          <div class="divider"></div>
+          
+          <div class="form-section">
+            <h2 class="section-title">
+              <i class="fas fa-edit"></i>
+              بيانات عملية الصرف
+            </h2>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user"></i> اسم السائق
+                </label>
+                <input type="text" id="f_driver" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-car"></i> نوع المركبة
+                </label>
+                <div id="f_type_display" class="form-input" style="display: flex; align-items: center; justify-content: space-between;">
+                  <span id="f_type_text">بنزين</span>
+                  <span id="f_type_badge" class="vehicle-type type-petrol">
+                    <i class="fas fa-gas-pump"></i> بنزين
+                  </span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-tachometer-alt"></i> العداد السابق
+                </label>
+                <input type="text" id="f_prev" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-gas-pump"></i> معدل الاستهلاك
+                </label>
+                <input type="text" id="f_kpl" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-calendar"></i> تاريخ العملية
+                </label>
+                <input type="date" id="f_date" class="form-input">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-clock"></i> وقت العملية
+                </label>
+                <input type="time" id="f_time" class="form-input">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-tachometer-alt"></i> العداد الجديد
+                </label>
+                <input type="number" id="f_curr" class="form-input" placeholder="أدخل الرقم الجديد">
+                <div class="form-error" id="f_curr_error">العداد الجديد يجب أن يكون أكبر من العداد السابق</div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-road"></i> المسافة
+                </label>
+                <input type="text" id="f_distance" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-oil-can"></i> كمية الوقود (لتر)
+                </label>
+                <input type="text" id="f_liters" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-gas-pump"></i> كمية الوقود (جالون)
+                </label>
+                <input type="text" id="f_gallons" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-money-bill-wave"></i> سعر اللتر
+                </label>
+                <input type="number" id="f_price" class="form-input" placeholder="أدخل السعر" step="0.01">
+                <div class="form-error" id="f_price_error">يرجى إدخال سعر اللتر</div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-calculator"></i> التكلفة
+                </label>
+                <input type="text" id="f_cost" class="form-input" readonly>
+              </div>
+              
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">
+                  <i class="fas fa-sticky-note"></i> ملاحظات
+                </label>
+                <input type="text" id="f_notes" class="form-input" placeholder="مثال: رحلة دنقلا">
+              </div>
+            </div>
+          </div>
+          
+          <!-- الأزرار في الأسفل مع البيانات -->
+          <div class="form-actions">
+            <button class="btn btn-success" id="saveFuelBtnBottom" data-permission="dispenseFuel">
+              <i class="fas fa-check-circle"></i>
+              حفظ العملية
+            </button>
+            <button class="btn btn-warning" id="previewInvoiceBtnBottom" data-permission="dispenseFuel">
+              <i class="fas fa-eye"></i>
+              معاينة الفاتورة
+            </button>
+            <button class="btn btn-danger" id="clearFuelBtnBottom" data-permission="dispenseFuel">
+              <i class="fas fa-eraser"></i>
+              مسح النموذج
+            </button>
+          </div>
+        </div>
+        
+        <!-- جدول عمليات الصرف اليومية (الجديد) -->
+        <div class="form-section" style="margin-top: 2rem;">
+          <div class="table-header">
+            <div class="table-title">
+              <i class="fas fa-list"></i>
+              عمليات الصرف اليومية
+            </div>
+            <div class="table-actions">
+              <input type="date" id="dailyFuelDateFilter" class="form-input" style="width: auto;">
+              <button class="btn btn-primary btn-sm" onclick="loadFuelDailyTable()">
+                <i class="fas fa-search"></i> عرض
+              </button>
+              <button class="btn btn-success btn-sm" onclick="exportDailyFuelToExcel()">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+              <button class="btn btn-accent btn-sm" onclick="printDailyFuelTable()">
+                <i class="fas fa-print"></i> طباعة
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th><i class="fas fa-clock"></i> الوقت</th>
+                    <th><i class="fas fa-car-alt"></i> اللوحة</th>
+                    <th><i class="fas fa-user"></i> السائق</th>
+                    <th><i class="fas fa-tachometer-alt"></i> العداد الجديد</th>
+                    <th><i class="fas fa-road"></i> المسافة</th>
+                    <th><i class="fas fa-gas-pump"></i> اللترات</th>
+                    <th><i class="fas fa-money-bill"></i> التكلفة</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyFuelTableBody">
+                  <tr>
+                    <td colspan="8">
+                      <div class="loader">
+                        <div class="spinner"></div>
+                        <div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل البيانات...</div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- صفحة سجل العمليات - المحسنة -->
+      <div id="historyPage" class="page-content hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-history"></i>
+              سجل العمليات
+            </h1>
+            <p class="page-subtitle">متابعة وتقييم أداء أسطول المركبات</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="loadLogs()" data-permission="viewReports">
+              <i class="fas fa-sync-alt"></i>
+              تحديث
+            </button>
+            <button class="btn btn-warning" onclick="clearFilters()" data-permission="viewReports">
+              <i class="fas fa-times"></i>
+              مسح الفلاتر
+            </button>
+          </div>
+        </div>
+        
+        <!-- ملخص البيانات -->
+        <div class="data-summary">
+          <div class="summary-item">
+            <div class="summary-value" id="totalOperations">0</div>
+            <div class="summary-label">إجمالي العمليات</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="totalLiters">0</div>
+            <div class="summary-label">إجمالي اللترات</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="totalCost">0</div>
+            <div class="summary-label">إجمالي التكلفة</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="avgConsumption">0</div>
+            <div class="summary-label">متوسط الاستهلاك</div>
+          </div>
+        </div>
+        
+        <!-- الفلاتر المتقدمة (تم تعديلها لتكون بالتاريخ فقط) -->
+        <div class="advanced-filters">
+          <h2 class="section-title">
+            <i class="fas fa-filter"></i>
+            فلاتر البحث
+          </h2>
+          
+          <!-- حقول التاريخ فقط (دائماً ظاهرة) -->
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-calendar-alt"></i> من تاريخ
+              </label>
+              <input type="date" id="filterDateFrom" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-calendar-alt"></i> إلى تاريخ
+              </label>
+              <input type="date" id="filterDateTo" class="form-input">
+            </div>
+          </div>
+          
+          <div class="filter-row">
+            <div class="filter-col">
+              <label class="form-label">
+                <i class="fas fa-building"></i> القسم
+              </label>
+              <select id="filterBranch" class="form-select">
+                <option value="all">جميع الأقسام</option>
+                <option value="الخرطوم">الخرطوم</option>
+                <option value="عطبرة">عطبرة</option>
+                <option value="شندي">شندي</option>
+                <option value="دنقلا">دنقلا</option>
+                <option value="الدبة">الدبة</option>
+                <option value="بورتسودان">بورتسودان</option>
+                <option value="كسلا">كسلا</option>
+                <option value="القضارف">القضارف</option>
+                <option value="مدني">مدني</option>
+                <option value="كوستي">كوستي</option>
+                <option value="الابيض">الابيض</option>
+                <option value="سنجة">سنجة</option>
+              </select>
+            </div>
+            
+            <div class="filter-col">
+              <label class="form-label">
+                <i class="fas fa-car"></i> نوع المركبة
+              </label>
+              <select id="filterVehicleType" class="form-select">
+                <option value="all">جميع الأنواع</option>
+                <option value="بنزين">بنزين</option>
+                <option value="جاز">جاز</option>
+                <option value="مولد">مولد</option>
+              </select>
+            </div>
+            
+            <div class="filter-col">
+              <label class="form-label">
+                <i class="fas fa-user"></i> السائق
+              </label>
+              <input type="text" id="filterDriver" class="form-input" placeholder="اسم السائق">
+            </div>
+            
+            <div class="filter-col">
+              <label class="form-label">
+                <i class="fas fa-car-alt"></i> اللوحة
+              </label>
+              <input type="text" id="filterPlate" class="form-input" placeholder="رقم اللوحة">
+            </div>
+          </div>
+          
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="btnFilterLogs" data-permission="viewReports">
+              <i class="fas fa-filter"></i>
+              تطبيق الفلاتر
+            </button>
+            <button class="btn btn-success" id="btnExport" data-permission="viewReports">
+              <i class="fas fa-file-export"></i>
+              تصدير البيانات
+            </button>
+          </div>
+        </div>
+        
+        <!-- عرض السجلات في جدول محسن -->
+        <div class="logs-table-container">
+          <div class="logs-table-header">
+            <div class="logs-table-title">
+              <i class="fas fa-list"></i>
+              سجل العمليات
+            </div>
+            <div class="logs-table-actions">
+              <button class="btn btn-sm btn-primary" onclick="refreshLogs()" data-permission="viewReports">
+                <i class="fas fa-sync-alt"></i>
+                تحديث
+              </button>
+              <button class="btn btn-sm btn-success" onclick="printLogsTable()" data-permission="viewReports">
+                <i class="fas fa-print"></i>
+                طباعة الجدول
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="logs-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th><i class="fas fa-calendar"></i> التاريخ</th>
+                  <th><i class="fas fa-clock"></i> الوقت</th>
+                  <th><i class="fas fa-car-alt"></i> اللوحة</th>
+                  <th><i class="fas fa-user"></i> السائق</th>
+                  <th><i class="fas fa-building"></i> القسم</th>
+                  <th><i class="fas fa-car"></i> النوع</th>
+                  <th><i class="fas fa-tachometer-alt"></i> العداد السابق</th>
+                  <th><i class="fas fa-tachometer-alt"></i> العداد الجديد</th>
+                  <th><i class="fas fa-road"></i> المسافة</th>
+                  <th><i class="fas fa-gas-pump"></i> اللترات</th>
+                  <th><i class="fas fa-money-bill"></i> التكلفة</th>
+                  <th class="no-print"><i class="fas fa-cogs"></i> إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody">
+                <tr>
+                  <td colspan="14">
+                    <div class="loader">
+                      <div class="spinner"></div>
+                      <div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل البيانات...</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- التصفح -->
+          <div class="pagination" id="logsPagination">
+            <button class="pagination-btn" onclick="changeLogsPage('prev')">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn" onclick="changeLogsPage('next')">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- إحصائيات مفصلة -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-chart-bar"></i>
+            إحصائيات مفصلة
+          </h2>
+          
+          <div class="stats-grid">
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statCount">0</div>
+                <div class="stat-label-mini">عدد العمليات</div>
+            </div>
+            </div>
+            
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-route"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statDistance">0</div>
+                <div class="stat-label-mini">إجمالي المسافة</div>
+              </div>
+            </div>
+            
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-gas-pump"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statLiters">0</div>
+                <div class="stat-label-mini">إجمالي اللترات</div>
+              </div>
+            </div>
+            
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statCost">0</div>
+                <div class="stat-label-mini">إجمالي التكلفة</div>
+              </div>
+            </div>
+            
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-tachometer-alt"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statAvgKpl">0</div>
+                <div class="stat-label-mini">متوسط كفاءة</div>
+              </div>
+            </div>
+            
+            <div class="stat-card-mini">
+              <div class="stat-icon-mini">
+                <i class="fas fa-calculator"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value-mini" id="statAvgCost">0</div>
+                <div class="stat-label-mini">متوسط التكلفة/كم</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- صفحة إدارة المستخدمين المعدلة -->
+      <div id="usersPage" class="page-content hidden">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-users-cog"></i>
+              إدارة المستخدمين
+            </h1>
+            <p class="page-subtitle">إضافة وتعديل وإدارة حسابات المستخدمين</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-success" onclick="openUserModal()" data-permission="manageUsers">
+              <i class="fas fa-user-plus"></i>
+              إضافة مستخدم
+            </button>
+            <button class="btn btn-primary" onclick="loadUsersList()" data-permission="manageUsers">
+              <i class="fas fa-sync-alt"></i>
+              تحديث القائمة
+            </button>
+          </div>
+        </div>
+        
+        <!-- ملخص سريع -->
+        <div class="stats-grid">
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="totalUsers">0</div>
+              <div class="stat-label-mini">إجمالي المستخدمين</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="activeUsers">0</div>
+              <div class="stat-label-mini">مستخدمين نشطين</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="managersCount">0</div>
+              <div class="stat-label-mini">مديرين</div>
+            </div>
+          </div>
+          
+          <div class="stat-card-mini">
+            <div class="stat-icon-mini">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-value-mini" id="supervisorsCount">0</div>
+              <div class="stat-label-mini">مشرفين</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- البحث والتصفية -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-search"></i>
+            البحث والتصفية
+          </h2>
+          
+          <div class="search-box">
+            <input type="text" id="searchUsers" class="search-input" placeholder="ابحث بالاسم أو البريد الإلكتروني أو الدور أو القسم">
+            <i class="fas fa-search search-icon"></i>
+          </div>
+          
+          <div class="filter-chips">
+            <div class="filter-chip active" data-filter="all">
+              <i class="fas fa-th"></i>
+              الكل
+            </div>
+            <div class="filter-chip" data-filter="مدير">
+              <i class="fas fa-user-cog"></i>
+              مديرين
+            </div>
+            <div class="filter-chip" data-filter="مشرف">
+              <i class="fas fa-user-shield"></i>
+              مشرفين
+            </div>
+            <div class="filter-chip" data-filter="مستخدم">
+              <i class="fas fa-user-tie"></i>
+              ضباط حركة
+            </div>
+            <div class="filter-chip" data-filter="active">
+              <i class="fas fa-check-circle"></i>
+              نشط
+            </div>
+            <div class="filter-chip" data-filter="suspended">
+              <i class="fas fa-pause-circle"></i>
+              موقوف
+            </div>
+          </div>
+        </div>
+        
+        <!-- قائمة المستخدمين -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <i class="fas fa-users"></i>
+            قائمة المستخدمين
+          </h2>
+          
+          <div class="export-options">
+            <button class="export-btn" onclick="exportUsersToExcel()" data-permission="manageUsers">
+              <i class="fas fa-file-excel"></i>
+              تصدير Excel
+            </button>
+            <button class="export-btn" onclick="printUsers()" data-permission="manageUsers">
+              <i class="fas fa-print"></i>
+              طباعة
+            </button>
+          </div>
+          
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th><i class="fas fa-user"></i> المستخدم</th>
+                    <th><i class="fas fa-envelope"></i> البريد الإلكتروني</th>
+                    <th><i class="fas fa-shield-alt"></i> الدور</th>
+                    <th><i class="fas fa-building"></i> القسم</th>
+                    <th><i class="fas fa-phone"></i> الهاتف</th>
+                    <th><i class="fas fa-user-check"></i> الحالة</th>
+                    <th><i class="fas fa-calendar"></i> التسجيل</th>
+                    <th><i class="fas fa-clock"></i> الانتهاء</th>
+                    <th class="no-print"><i class="fas fa-cogs"></i> إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                  <tr id="loadingUsersRow">
+                    <td colspan="10">
+                      <div class="loader">
+                        <div class="spinner"></div>
+                        <div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل المستخدمين...</div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- التصفح -->
+          <div class="pagination" id="usersPagination">
+            <button class="pagination-btn" onclick="changeUsersPage('prev')">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn" onclick="changeUsersPage('next')">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- حاوية التنبيهات -->
+  <div id="alertsContainer"></div>
+
+  <!-- نافذة إضافة/تعديل مستخدم -->
+  <div id="userModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="userModalTitle">إضافة مستخدم جديد</h3>
+        <button class="modal-close" onclick="closeUserModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="userForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user"></i> الاسم الكامل
+              </label>
+              <input type="text" id="userName" class="form-input" placeholder="أدخل الاسم الكامل" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-envelope"></i> البريد الإلكتروني
+              </label>
+              <input type="email" id="userEmail" class="form-input" placeholder="example@adiyat.com" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-lock"></i> كلمة المرور
+              </label>
+              <input type="password" id="userPassword" class="form-input" placeholder="أدخل كلمة المرور">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-phone"></i> رقم الهاتف
+              </label>
+              <input type="tel" id="userPhone" class="form-input" placeholder="أدخل رقم الهاتف">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-shield-alt"></i> الدور
+              </label>
+              <select id="userRole" class="form-select">
+                <option value="مستخدم">ضابط حركة وتشغيل</option>
+                <option value="مشرف">مشرف</option>
+                <option value="مدير">مدير</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-building"></i> القسم
+              </label>
+              <select id="userBranch" class="form-select">
+                <option value="الخرطوم">الخرطوم</option>
+                <option value="عطبرة">عطبرة</option>
+                <option value="شندي">شندي</option>
+                <option value="دنقلا">دنقلا</option>
+                <option value="الدبة">الدبة</option>
+                <option value="بورتسودان">بورتسودان</option>
+                <option value="كسلا">كسلا</option>
+                <option value="القضارف">القضارف</option>
+                <option value="مدني">مدني</option>
+                <option value="كوستي">كوستي</option>
+                <option value="الابيض">الابيض</option>
+                <option value="سنجة">سنجة</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-calendar"></i> تاريخ انتهاء الصلاحية
+              </label>
+              <input type="date" id="userExpiryDate" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-user-check"></i> الحالة
+              </label>
+              <select id="userStatus" class="form-select">
+                <option value="active">نشط</option>
+                <option value="suspended">موقوف</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- قسم الصلاحيات -->
+          <div class="form-section" style="margin-top: 2rem;">
+            <h2 class="section-title">
+              <i class="fas fa-key"></i>
+              الصلاحيات
+            </h2>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: var(--radius);">
+                  <input type="checkbox" id="permManageVehicles" checked style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
+                  <div>
+                    <div style="font-weight: 600; color: var(--text-dark);">إدارة المركبات</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-gray);">القدرة على إضافة وتعديل وحذف المركبات</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: var(--radius);">
+                  <input type="checkbox" id="permDispenseFuel" checked style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
+                  <div>
+                    <div style="font-weight: 600; color: var(--text-dark);">صرف الوقود</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-gray);">القدرة على تسجيل عمليات صرف الوقود</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: var(--radius);">
+                  <input type="checkbox" id="permViewReports" checked style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
+                  <div>
+                    <div style="font-weight: 600; color: var(--text-dark);">عرض التقارير</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-gray);">القدرة على عرض التقارير والإحصائيات</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: var(--radius);">
+                  <input type="checkbox" id="permManageUsers" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
+                  <div>
+                    <div style="font-weight: 600; color: var(--text-dark);">إدارة المستخدمين</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-gray);">القدرة على إدارة حسابات المستخدمين</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <button type="button" class="btn btn-ghost" onclick="closeUserModal()">
+              إلغاء
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              حفظ المستخدم
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- معاينة الفاتورة المحسنة -->
+  <div id="invoiceModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">معاينة الفاتورة</h3>
+        <button class="modal-close" onclick="closeInvoiceModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="invoice-preview">
+          <div class="invoice-header">
+            <div class="invoice-title">فاتورة صرف وقود</div>
+            <div class="invoice-number" id="invoiceNumber">رقم الفاتورة</div>
+          </div>
+          
+          <div class="invoice-section">
+            <div class="invoice-section-title">معلومات المركبة</div>
+            <div class="invoice-details">
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">القسم</div>
+                <div class="invoice-detail-value" id="invoiceBranch">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">اللوحة</div>
+                <div class="invoice-detail-value" id="invoicePlate">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">السائق</div>
+                <div class="invoice-detail-value" id="invoiceDriver">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">نوع المركبة</div>
+                <div class="invoice-detail-value" id="invoiceVehicleType">-</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="invoice-section">
+            <div class="invoice-section-title">تفاصيل الصرف</div>
+            <div class="invoice-details">
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">العداد السابق</div>
+                <div class="invoice-detail-value" id="invoicePrevOdometer">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">العداد الحالي</div>
+                <div class="invoice-detail-value" id="invoiceNewOdometer">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">المسافة المقطوعة</div>
+                <div class="invoice-detail-value" id="invoiceDistance">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">اللترات المستهلكة</div>
+                <div class="invoice-detail-value" id="invoiceLiters">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">سعر اللتر</div>
+                <div class="invoice-detail-value" id="invoicePrice">-</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="invoice-section">
+            <div class="invoice-section-title">التحويل إلى جالونات</div>
+            <div class="invoice-details">
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">اللترات</div>
+                <div class="invoice-detail-value" id="invoiceLiters2">-</div>
+              </div>
+              <div class="invoice-detail-item">
+                <div class="invoice-detail-label">الجالونات</div>
+                <div class="invoice-detail-value" id="invoiceGallons">-</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="invoice-total">
+            <div class="invoice-total-label">المبلغ الإجمالي</div>
+            <div class="invoice-total-value" id="invoiceTotal">0</div>
+          </div>
+          
+          <div class="invoice-actions">
+            <button class="btn btn-primary" onclick="printInvoice()">
+              <i class="fas fa-print"></i>
+              طباعة الفاتورة
+            </button>
+            <button class="btn btn-success" onclick="saveInvoice()">
+              <i class="fas fa-save"></i>
+              حفظ العملية
+            </button>
+            <button class="btn btn-danger" onclick="closeInvoiceModal()">
+              <i class="fas fa-times"></i>
+              إغلاق
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database-compat.js"></script>
+  <!-- مكتبة jsPDF للتصدير PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    // ---------- إعداد Firebase ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5nhg3O_H-7QmJDuqaq5nyHa3MjsdgxyY",
+      authDomain: "mypro-aa841.firebaseapp.com",
+      databaseURL: "https://mypro-aa841-default-rtdb.firebaseio.com",
+      projectId: "mypro-aa841",
+      storageBucket: "mypro-aa841.firebasestorage.app",
+      messagingSenderId: "936452416964",
+      appId: "1:936452416964:web:c792e6f63ad328dd217091",
+      measurementId: "G-HYYN6TRQXW"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const firestore = firebase.firestore();
+    const rtdb = firebase.database();
+    
+    // ---------- متغيرات عامة ----------
+    let currentUser = null;
+    let userData = null;
+    let currentPlate = null;
+    let currentVehicle = null;
+    let currentRecordForInvoice = null;
+    let currentEditingUserId = null;
+    let allUsersCache = [];
+    let currentPage = 'dashboard';
+    let vehiclesCache = [];
+    let logsCache = [];
+    let dailyFuelCache = [];
+    let currentVehiclesPage = 1;
+    let currentLogsPage = 1;
+    let currentUsersPage = 1;
+    const itemsPerPage = 10;
+    let isEditingVehicle = false;
+    let isEditingUser = false;
+    
+    const $ = id => document.getElementById(id);
+    const fmt = (n,d=2)=>(isFinite(n)?Number(n).toFixed(d):'');
+    const hide = el => el.classList.add('hidden');
+    const show = el => el.classList.remove('hidden');
+    
+    // ========== وظائف مساعدة للتاريخ الميلادي ==========
+    function displayDate(dateStr) {
+      if (!dateStr) return 'غير محدد';
+      
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return 'تاريخ غير صالح';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    }
+    
+    function displayDateTime(dateStr, timeStr) {
+      const date = displayDate(dateStr);
+      const time = timeStr || '--:--';
+      return `${date} ${time}`;
+    }
+    
+    function getMiladiDate(daysOffset = 0) {
+      const date = new Date();
+      date.setDate(date.getDate() + daysOffset);
+      return date.toISOString().slice(0, 10);
+    }
+    
+    function today(){ return getMiladiDate(); }
+    function zeroPad(n, len=3){ return String(n).padStart(len,'0'); }
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString('en-US', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    function showAlert(message, type = 'success') {
+      const alertsContainer = document.getElementById('alertsContainer');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+      `;
+      
+      alertsContainer.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateX(-20px)';
+        setTimeout(() => alert.remove(), 300);
+      }, 4000);
+    }
+    
+    // ========== وظائف نظام الصلاحيات المحسنة ==========
+    
+    // وظيفة التحقق من الصلاحيات
+    function checkPermission(permissionName) {
+      if (!userData) return false;
+      
+      // المدير لديه جميع الصلاحيات
+      if (userData.role === 'مدير') return true;
+      
+      // التحقق من الصلاحية المحددة
+      const permissions = userData.permissions || {};
+      return permissions[permissionName] === true;
+    }
+    
+    // وظائف التحقق للصلاحيات المختلفة
+    function checkIfCanManageUsers() {
+      return checkPermission('manageUsers');
+    }
+    
+    function checkIfCanManageVehicles() {
+      return checkPermission('manageVehicles');
+    }
+    
+    function checkIfCanDispenseFuel() {
+      return checkPermission('dispenseFuel');
+    }
+    
+    function checkIfCanViewReports() {
+      return checkPermission('viewReports');
+    }
+    
+    // تحديث واجهة المستخدم بناءً على الصلاحيات
+    function updateUIBasedOnRole() {
+      const role = userData.role;
+      const permissions = userData.permissions || {};
+      
+      // إخفاء عناصر القائمة بناءً على الصلاحيات
+      document.querySelectorAll('[data-permission]').forEach(element => {
+        const permission = element.getAttribute('data-permission');
+        if (!checkPermission(permission)) {
+          element.style.display = 'none';
+        }
+      });
+      
+      // إخفاء الأزرار التي تتطلب صلاحيات معينة
+      document.querySelectorAll('[data-permission]').forEach(button => {
+        const permission = button.getAttribute('data-permission');
+        if (!checkPermission(permission)) {
+          button.style.display = 'none';
+        }
+      });
+    }
+    
+    // التحقق من الصلاحيات عند محاولة الوصول للصفحات
+    function checkPagePermission(page) {
+      switch(page) {
+        case 'vehicles':
+          return checkIfCanManageVehicles();
+        case 'fuel':
+          return checkIfCanDispenseFuel();
+        case 'history':
+          return checkIfCanViewReports();
+        case 'users':
+          return checkIfCanManageUsers();
+        default:
+          return true;
+      }
+    }
+    
+    // إظهار رسالة خطأ عند محاولة الوصول لصفحة بدون صلاحية
+    function showPermissionError(action) {
+      const actionMessages = {
+        'manageVehicles': 'إدارة المركبات',
+        'dispenseFuel': 'صرف الوقود',
+        'viewReports': 'عرض التقارير',
+        'manageUsers': 'إدارة المستخدمين'
+      };
+      
+      const message = `لا تملك صلاحية ${actionMessages[action] || 'تنفيذ هذه العملية'}`;
+      showAlert(message, 'error');
+    }
+    
+    // ---------- إظهار/إخفاء كلمة المرور ----------
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('loginPassword');
+      const icon = this.querySelector('i');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+    
+    // ---------- نظام تسجيل الدخول ----------
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const loginError = document.getElementById('loginError');
+      
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        currentUser = userCredential.user;
+        
+        const userDoc = await firestore.collection('users').doc(currentUser.uid).get();
+        
+        if (userDoc.exists) {
+          userData = userDoc.data();
+          
+          if (!userData || Object.keys(userData).length === 0) {
+            showAlert('هذا الحساب غير مفعل، يرجى التواصل مع المدير', 'error');
+            await auth.signOut();
+            return;
+          }
+          
+          if (userData.status === 'suspended') {
+            showAlert('هذا الحساب موقوف، يرجى التواصل مع المدير', 'error');
+            await auth.signOut();
+            return;
+          }
+          
+          if (userData.expiryDate && new Date(userData.expiryDate) < new Date()) {
+            showAlert('هذا الحساب منتهي الصلاحية، يرجى التواصل مع المدير', 'error');
+            await auth.signOut();
+            return;
+          }
+          
+          if (!userData.name || userData.name.trim() === '') {
+            userData.name = currentUser.email.split('@')[0] || 'مستخدم';
+          }
+          
+          if (!userData.role) {
+            userData.role = 'مستخدم';
+          }
+          
+          if (!userData.branch) {
+            userData.branch = 'الخرطوم';
+          }
+          
+          // تعيين الصلاحيات الافتراضية إذا لم تكن موجودة
+          if (!userData.permissions) {
+            userData.permissions = {
+              manageVehicles: userData.role === 'مدير' || userData.role === 'مشرف',
+              dispenseFuel: true,
+              viewReports: true,
+              manageUsers: userData.role === 'مدير'
+            };
+          }
+          
+          userData.name = userData.name.trim();
+          
+          updateUIForUser();
+          
+          hide(document.getElementById('loginContainer'));
+          show(document.getElementById('mainContent'));
+          
+          navigateTo('dashboard');
+          
+          showAlert(`مرحباً بك ${userData.name} في نظام إدارة الوقود`, 'success');
+          
+        } else {
+          userData = {
+            name: currentUser.email.split('@')[0] || 'مستخدم',
+            role: 'مستخدم',
+            branch: 'الخرطوم',
+            email: currentUser.email,
+            status: 'active',
+            permissions: {
+              manageVehicles: false,
+              dispenseFuel: true,
+              viewReports: true,
+              manageUsers: false
+            }
+          };
+          
+          await firestore.collection('users').doc(currentUser.uid).set(userData);
+          
+          updateUIForUser();
+          
+          hide(document.getElementById('loginContainer'));
+          show(document.getElementById('mainContent'));
+          
+          navigateTo('dashboard');
+          
+          showAlert('مرحباً بك، تم إنشاء حسابك بنجاح', 'success');
+        }
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        
+        // إخفاء رسالة الخطأ الحالية
+        loginError.style.display = 'none';
+        
+        // التعامل مع أنواع مختلفة من الأخطاء
+        let errorMessage = '';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'البريد الإلكتروني غير مسجل في النظام';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'كلمة المرور غير صحيحة';
+            break;
+          case 'auth/user-disabled':
+            errorMessage = 'حسابك معطل، يرجى التواصل مع المدير';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'تم تجاوز عدد محاولات تسجيل الدخول المسموح بها، يرجى المحاولة لاحقاً';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'البريد الإلكتروني غير صالح';
+            break;
+          case 'auth/network-request-failed':
+            errorMessage = 'مشكلة في الاتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى';
+            break;
+          default:
+            errorMessage = 'حدث خطأ أثناء تسجيل الدخول، يرجى المحاولة مرة أخرى';
+        }
+        
+        // عرض رسالة الخطأ المحددة
+        loginError.innerHTML = `
+          <i class="fas fa-exclamation-circle"></i>
+          <span>${errorMessage}</span>
+        `;
+        loginError.style.display = 'flex';
+        
+        // عرض التنبيه أيضاً
+        showAlert(errorMessage, 'error');
+      }
+    });
+    
+    function updateUIForUser() {
+      // تحديث معلومات المستخدم في السايدبار
+      const userAvatar = document.getElementById('userAvatarSidebar');
+      if (userData.name) {
+        userAvatar.textContent = userData.name.charAt(0);
+      }
+      
+      document.getElementById('userNameSidebar').textContent = userData.name || currentUser.email;
+      
+      const roleDisplay = userData.role === 'مستخدم' ? 'ضابط حركة وتشغيل' : userData.role;
+      document.getElementById('userRoleSidebar').textContent = roleDisplay || 'ضابط حركة وتشغيل';
+      
+      // تحديث الواجهة بناءً على الصلاحيات
+      updateUIBasedOnRole();
+    }
+    
+    // ---------- تسجيل الخروج ----------
+    document.getElementById('logoutBtnSidebar').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        currentUser = null;
+        userData = null;
+        
+        show(document.getElementById('loginContainer'));
+        hide(document.getElementById('mainContent'));
+        
+        document.getElementById('loginForm').reset();
+        document.getElementById('loginError').style.display = 'none';
+        
+        showAlert('تم تسجيل الخروج بنجاح', 'info');
+      });
+    });
+    
+    // ---------- التحقق من حالة المستخدم ----------
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        currentUser = user;
+        
+        const userDoc = await firestore.collection('users').doc(user.uid).get();
+        
+        if (userDoc.exists) {
+          userData = userDoc.data();
+          
+          if (!userData || Object.keys(userData).length === 0) {
+            await auth.signOut();
+            return;
+          }
+          
+          if (userData.status === 'suspended') {
+            showAlert('هذا الحساب موقوف، يرجى التواصل مع المدير', 'error');
+            await auth.signOut();
+            return;
+          }
+          
+          if (userData.expiryDate && new Date(userData.expiryDate) < new Date()) {
+            showAlert('هذا الحساب منتهي الصلاحية، يرجى التواصل مع المدير', 'error');
+            await auth.signOut();
+            return;
+          }
+          
+          if (!userData.name || userData.name.trim() === '') {
+            userData.name = currentUser.email.split('@')[0] || 'مستخدم';
+          }
+          
+          if (!userData.role) {
+            userData.role = 'مستخدم';
+          }
+          
+          if (!userData.branch) {
+            userData.branch = 'الخرطوم';
+          }
+          
+          // تعيين الصلاحيات الافتراضية إذا لم تكن موجودة
+          if (!userData.permissions) {
+            userData.permissions = {
+              manageVehicles: userData.role === 'مدير' || userData.role === 'مشرف',
+              dispenseFuel: true,
+              viewReports: true,
+              manageUsers: userData.role === 'مدير'
+            };
+          }
+          
+          userData.name = userData.name.trim();
+          
+          updateUIForUser();
+          
+          hide(document.getElementById('loginContainer'));
+          show(document.getElementById('mainContent'));
+          
+          navigateTo('dashboard');
+        } else {
+          userData = {
+            name: currentUser.email.split('@')[0] || 'مستخدم',
+            role: 'مستخدم',
+            branch: 'الخرطوم',
+            email: currentUser.email,
+            status: 'active',
+            permissions: {
+              manageVehicles: false,
+              dispenseFuel: true,
+              viewReports: true,
+              manageUsers: false
+            }
+          };
+          
+          await firestore.collection('users').doc(currentUser.uid).set(userData);
+          
+          updateUIForUser();
+          
+          hide(document.getElementById('loginContainer'));
+          show(document.getElementById('mainContent'));
+          
+          navigateTo('dashboard');
+        }
+      } else {
+        currentUser = null;
+        userData = null;
+        
+        show(document.getElementById('loginContainer'));
+        hide(document.getElementById('mainContent'));
+      }
+    });
+    
+    // ---------- التنقل بين الصفحات مع التحقق من الصلاحيات ----------
+    function navigateTo(page) {
+      // التحقق من الصلاحيات قبل الانتقال
+      if (!checkPagePermission(page)) {
+        showPermissionError(page);
+        return;
+      }
+      
+      // إخفاء جميع الصفحات
+      document.querySelectorAll('.page-content').forEach(el => hide(el));
+      
+      // إزالة النشط من جميع عناصر القائمة
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      // إظهار الصفحة المطلوبة
+      $(`${page}Page`).classList.remove('hidden');
+      
+      // إضافة النشط لعنصر القائمة
+      const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+      if (navItem) {
+        navItem.classList.add('active');
+      }
+      
+      // تحديث الصفحة الحالية
+      currentPage = page;
+      
+      // إغلاق القائمة في الجوال
+      if (window.innerWidth <= 992) {
+        $('sidebar').classList.remove('active');
+      }
+      
+      // تحميل بيانات الصفحة
+      switch(page) {
+        case 'dashboard':
+          loadDashboardData();
+          break;
+        case 'vehicles':
+          loadVehiclesList();
+          break;
+        case 'fuel':
+          setupFuelPage();
+          break;
+        case 'history':
+          loadLogs();
+          break;
+        case 'users':
+          loadUsersList();
+          break;
+      }
+    }
+    
+    // ---------- القائمة المتحركة للجوال ----------
+    document.getElementById('mobileMenuToggle').addEventListener('click', () => {
+      $('sidebar').classList.toggle('active');
+    });
+    
+    // إغلاق القائمة عند النقر خارجها (للجوال)
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992) {
+        const sidebar = $('sidebar');
+        const toggleBtn = $('mobileMenuToggle');
+        
+        if (sidebar.classList.contains('active') && 
+            !sidebar.contains(e.target) && 
+            !toggleBtn.contains(e.target)) {
+          sidebar.classList.remove('active');
+        }
+      }
+    });
+    
+    // ---------- إعداد أحداث التنقل ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      // تعيين التواريخ الافتراضية بالميلادي
+      const todayDate = getMiladiDate();
+      const lastWeekDate = getMiladiDate(-7);
+      const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10);
+      
+      if ($('f_date')) $('f_date').value = todayDate;
+      if ($('filterDateFrom')) $('filterDateFrom').value = todayDate; // الافتراضي لليوم
+      if ($('filterDateTo')) $('filterDateTo').value = todayDate; // الافتراضي لليوم
+      if ($('v_registration_date')) $('v_registration_date').value = todayDate;
+      if ($('userExpiryDate')) {
+        const expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        $('userExpiryDate').value = expiryDate.toISOString().slice(0, 10);
+      }
+      if ($('dailyFuelDateFilter')) $('dailyFuelDateFilter').value = todayDate;
+      
+      // إضافة أحداث النقر لعناصر القائمة
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const page = item.getAttribute('data-page');
+          navigateTo(page);
+        });
+      });
+      
+      // إعداد حدث نموذج المستخدم
+      if ($('userForm')) {
+        $('userForm').addEventListener('submit', saveUser);
+      }
+      
+      // إعداد أحداث الفلاتر في صفحة المركبات
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          filterVehicles(chip.getAttribute('data-filter'));
+        });
+      });
+      
+      // إعداد البحث السريع في صفحة المركبات
+      if ($('searchVehicleInput')) {
+        $('searchVehicleInput').addEventListener('input', (e) => {
+          searchVehicles(e.target.value);
+        });
+      }
+      
+      // إعداد البحث السريع في صفحة الوقود
+      if ($('quickVehicleSearch')) {
+        $('quickVehicleSearch').addEventListener('input', (e) => {
+          quickSearchVehicle(e.target.value);
+        });
+      }
+      
+      // إعداد البحث في صفحة المستخدمين
+      if ($('searchUsers')) {
+        $('searchUsers').addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          searchUsers(query);
+        });
+      }
+      
+      // إعداد الفلاتر في صفحة المستخدمين
+      document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          filterUsers(chip.getAttribute('data-filter'));
+        });
+      });
+      
+      // إضافة أحداث أزرار الفلاتر في صفحة السجلات
+      if ($('btnFilterLogs')) {
+        $('btnFilterLogs').addEventListener('click', loadLogs);
+      }
+      
+      if ($('btnExport')) {
+        $('btnExport').addEventListener('click', exportHistoryToExcel);
+      }
+      
+      // إضافة أحداث للأزرار التي تتطلب صلاحيات
+      document.querySelectorAll('[data-permission]').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const permission = button.getAttribute('data-permission');
+          if (!checkPermission(permission)) {
+            e.preventDefault();
+            e.stopPropagation();
+            showPermissionError(permission);
+          }
+        });
+      });
+      
+      // إعداد أحداث أزرار صفحة صرف الوقود - فقط الأزرار السفلية
+      setupFuelPageButtons();
+    });
+    
+    // ========== تحميل بيانات لوحة التحكم ==========
+    async function loadDashboardData() {
+      try {
+        // تحميل عدد المركبات
+        const vehiclesSnapshot = await firestore.collection('vehicles').get();
+        const vehiclesCount = vehiclesSnapshot.size;
+        $('dashboardVehiclesCount').textContent = vehiclesCount;
+        $('vehiclesCount').textContent = vehiclesCount;
+        
+        // تحميل بيانات اليوم
+        const todayDate = today();
+        const todaySnapshot = await firestore.collection('fuelRecords')
+          .where('date', '==', todayDate)
+          .get();
+        
+        let totalLitersToday = 0;
+        let totalCostToday = 0;
+        
+        todaySnapshot.forEach(doc => {
+          const record = doc.data();
+          totalLitersToday += parseFloat(record.liters) || 0;
+          totalCostToday += parseFloat(record.totalCost) || 0;
+        });
+        
+        $('dashboardFuelToday').textContent = fmt(totalLitersToday, 1);
+        $('dashboardCostToday').textContent = fmt(totalCostToday, 2);
+        
+        // تحميل عدد السجلات
+        const logsSnapshot = await firestore.collection('fuelRecords').get();
+        $('logsCount').textContent = logsSnapshot.size;
+        
+        // حساب كفاءة الاستهلاك (مثال)
+        const efficiency = 85 + Math.floor(Math.random() * 15);
+        $('dashboardEfficiency').textContent = `${efficiency}%`;
+        
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    }
+    
+    function refreshDashboard() {
+      loadDashboardData();
+      showAlert('تم تحديث بيانات لوحة التحكم', 'success');
+    }
+    
+    function printDailyReport() {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      showAlert('جاري إنشاء تقرير اليوم...', 'info');
+    }
+    
+    // ========== وظائف إدارة المركبات ==========
+    async function loadVehiclesList() {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      
+      const tbody = $('listVehicles');
+      tbody.innerHTML = '<tr id="loadingVehiclesRow"><td colspan="11"><div class="loader"><div class="spinner"></div><div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل المركبات...</div></td></tr>';
+      
+      try {
+        const snapshot = await firestore.collection('vehicles').get();
+        vehiclesCache = [];
+        
+        snapshot.forEach((doc, index) => {
+          const vehicle = doc.data();
+          vehiclesCache.push({
+            id: doc.id,
+            index: index + 1,
+            ...vehicle
+          });
+        });
+        
+        // تحديث الإحصائيات
+        updateVehiclesStats();
+        
+        renderVehiclesTable(vehiclesCache);
+        
+      } catch (error) {
+        console.error('Error loading vehicles:', error);
+        showAlert('حدث خطأ أثناء تحميل المركبات', 'error');
+      }
+    }
+    
+    function updateVehiclesStats() {
+      const totalVehicles = vehiclesCache.length;
+      const activeVehicles = vehiclesCache.filter(v => v.status === 'نشط').length;
+      const uniqueDrivers = [...new Set(vehiclesCache.map(v => v.driver))].length;
+      const uniqueBranches = [...new Set(vehiclesCache.map(v => v.branch))].length;
+      
+      $('totalVehicles').textContent = totalVehicles;
+      $('activeVehicles').textContent = activeVehicles;
+      $('totalDrivers').textContent = uniqueDrivers;
+      $('totalBranches').textContent = uniqueBranches;
+    }
+    
+    function renderVehiclesTable(vehicles) {
+      const tbody = $('listVehicles');
+      
+      if (vehicles.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" style="text-align: center; padding: 2rem; color: var(--text-gray);">
+              <div class="empty-state-icon">
+                <i class="fas fa-car"></i>
+              </div>
+              <div class="empty-state-title">لا توجد مركبات مسجلة</div>
+              <div class="empty-state-description">ابدأ بإضافة أول مركبة إلى النظام</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tbody.innerHTML = '';
+      
+      vehicles.forEach(vehicle => {
+        let typeBadgeClass = 'type-petrol';
+        let typeIcon = 'fa-gas-pump';
+        if (vehicle.vehicleType === 'جاز') {
+          typeBadgeClass = 'type-diesel';
+          typeIcon = 'fa-oil-can';
+        } else if (vehicle.vehicleType === 'مولد') {
+          typeBadgeClass = 'type-generator';
+          typeIcon = 'fa-bolt';
+        }
+        
+        let statusClass = 'badge-success';
+        let statusIcon = 'fa-check-circle';
+        let statusText = 'نشط';
+        
+        if (vehicle.status === 'غير نشط') {
+          statusClass = 'badge-danger';
+          statusIcon = 'fa-pause-circle';
+          statusText = 'غير نشط';
+        } else if (vehicle.status === 'صيانة') {
+          statusClass = 'badge-warning';
+          statusIcon = 'fa-tools';
+          statusText = 'صيانة';
+        } else if (vehicle.status === 'مستأجر') {
+          statusClass = 'badge-info';
+          statusIcon = 'fa-handshake';
+          statusText = 'مستأجر';
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="badge badge-primary">${vehicle.index}</span></td>
+          <td><span style="font-weight: 700; color: var(--text-dark);">${vehicle.plate}</span></td>
+          <td><span style="font-weight: 600; color: var(--text-dark);">${vehicle.driver}</span></td>
+          <td style="font-size: var(--text-sm);">${vehicle.phone || '-'}</td>
+          <td><span class="badge badge-info" style="font-size: var(--text-xs);">${vehicle.branch || 'غير معروف'}</span></td>
+          <td>
+            <span class="vehicle-type ${typeBadgeClass}" style="font-size: var(--text-xs;">
+              <i class="fas ${typeIcon}"></i> ${vehicle.vehicleType || 'بنزين'}
+            </span>
+          </td>
+          <td><span style="font-weight: 700; color: var(--primary);">${vehicle.lastOdometer || vehicle.initialOdometer || 0}</span></td>
+          <td><span style="font-weight: 700; color: var(--success);">${fmt(vehicle.kpl || 0, 2)}</span></td>
+          <td>
+            <span class="badge ${statusClass}" style="font-size: var(--text-xs);">
+              <i class="fas ${statusIcon}"></i> ${statusText}
+            </span>
+          </td>
+          <td style="font-size: var(--text-sm);">${displayDate(vehicle.createdAt)}</td>
+          <td>
+            <div style="display: flex; gap: 0.25rem;">
+              <button class="btn btn-sm btn-primary edit-vehicle-btn" 
+                      data-plate="${vehicle.plate}"
+                      style="padding: 0.25rem 0.5rem; font-size: var(--text-xs);"
+                      title="تعديل المركبة">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger delete-vehicle-btn" 
+                      data-plate="${vehicle.plate}"
+                      data-driver="${vehicle.driver}"
+                      style="padding: 0.25rem 0.5rem; font-size: var(--text-xs);"
+                      title="حذف المركبة">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(tr);
+      });
+      
+      // إضافة أحداث الأزرار
+      setTimeout(() => {
+        document.querySelectorAll('.edit-vehicle-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const plate = e.currentTarget.getAttribute('data-plate');
+            editVehicle(plate);
+          });
+        });
+        
+        document.querySelectorAll('.delete-vehicle-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const plate = e.currentTarget.getAttribute('data-plate');
+            const driver = e.currentTarget.getAttribute('data-driver');
+            deleteVehicle(plate, driver);
+          });
+        });
+      }, 100);
+    }
+    
+    function filterVehicles(filter) {
+      let filtered = vehiclesCache;
+      
+      if (filter !== 'all') {
+        if (['بنزين', 'جاز', 'مولد'].includes(filter)) {
+          filtered = vehiclesCache.filter(v => v.vehicleType === filter);
+        } else if (['نشط', 'غير نشط', 'صيانة', 'مستأجر'].includes(filter)) {
+          filtered = vehiclesCache.filter(v => v.status === filter);
+        }
+      }
+      
+      renderVehiclesTable(filtered);
+    }
+    
+    function searchVehicles(query) {
+      if (!query) {
+        renderVehiclesTable(vehiclesCache);
+        return;
+      }
+      
+      const filtered = vehiclesCache.filter(v => 
+        v.plate.toLowerCase().includes(query.toLowerCase()) || 
+        v.driver.toLowerCase().includes(query.toLowerCase()) ||
+        v.branch.toLowerCase().includes(query.toLowerCase()) ||
+        (v.phone && v.phone.includes(query))
+      );
+      
+      renderVehiclesTable(filtered);
+    }
+    
+    async function editVehicle(plate) {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      
+      try {
+        const vehicleDoc = await firestore.collection('vehicles').doc(plate).get();
+        
+        if (vehicleDoc.exists) {
+          const vehicle = vehicleDoc.data();
+          
+          $('v_plate').value = plate;
+          $('v_driver').value = vehicle.driver || '';
+          $('v_phone').value = vehicle.phone || '';
+          $('v_init_odo').value = vehicle.lastOdometer || vehicle.initialOdometer || '';
+          $('v_kpl').value = vehicle.kpl || '';
+          $('v_type').value = vehicle.vehicleType || 'بنزين';
+          $('v_branch').value = vehicle.branch || 'الخرطوم';
+          $('v_status').value = vehicle.status || 'نشط';
+          $('v_registration_date').value = vehicle.registrationDate || '';
+          $('v_notes').value = vehicle.notes || '';
+          
+          // إظهار أزرار التحديث وإلغاء
+          $('btnSaveVehicle').style.display = 'none';
+          $('btnUpdateVehicle').style.display = 'inline-flex';
+          $('btnClearVehicleForm').style.display = 'inline-flex';
+          $('btnCancelEdit').style.display = 'none';
+          
+          isEditingVehicle = true;
+          
+          showAlert(`تم تحميل بيانات المركبة ${plate}`, 'success');
+        }
+      } catch (error) {
+        console.error('Error loading vehicle:', error);
+        showAlert('حدث خطأ أثناء تحميل بيانات المركبة', 'error');
+      }
+    }
+    
+    async function deleteVehicle(plate, driver) {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      
+      if (!confirm(`هل أنت متأكد من حذف المركبة "${plate}" للسائق "${driver}"؟`)) {
+        return;
+      }
+      
+      try {
+        await firestore.collection('vehicles').doc(plate).delete();
+        showAlert('تم حذف المركبة بنجاح', 'success');
+        loadVehiclesList();
+      } catch (error) {
+        console.error('Error deleting vehicle:', error);
+        showAlert('حدث خطأ أثناء حذف المركبة', 'error');
+      }
+    }
+    
+    // زر حفظ المركبة
+    if ($('btnSaveVehicle')) {
+      $('btnSaveVehicle').addEventListener('click', async () => {
+        if (!checkIfCanManageVehicles()) {
+          showPermissionError('manageVehicles');
+          return;
+        }
+        
+        const plate = $('v_plate').value.trim();
+        const driver = $('v_driver').value.trim();
+        const phone = $('v_phone').value.trim();
+        const initOdo = parseInt($('v_init_odo').value);
+        const kpl = parseFloat($('v_kpl').value);
+        const vehicleType = $('v_type').value;
+        const branch = $('v_branch').value;
+        const status = $('v_status').value;
+        const registrationDate = $('v_registration_date').value;
+        const notes = $('v_notes').value.trim();
+        
+        // التحقق من الحقول
+        let hasError = false;
+        
+        // إخفاء رسائل الخطأ
+        document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+        
+        if (!plate) {
+          $('v_plate_error').classList.add('show');
+          $('v_plate').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!driver) {
+          $('v_driver_error').classList.add('show');
+          $('v_driver').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!(initOdo >= 0)) {
+          $('v_init_odo_error').classList.add('show');
+          $('v_init_odo').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!(kpl > 0)) {
+          $('v_kpl_error').classList.add('show');
+          $('v_kpl').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!vehicleType) {
+          $('v_type_error').classList.add('show');
+          $('v_type').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!branch) {
+          $('v_branch_error').classList.add('show');
+          $('v_branch').classList.add('error');
+          hasError = true;
+        }
+        
+        if (hasError) {
+          showAlert('يرجى ملء جميع الحقول بشكل صحيح', 'error');
+          return;
+        }
+        
+        const vehicleData = {
+          plate: plate,
+          driver: driver,
+          phone: phone,
+          initialOdometer: initOdo,
+          lastOdometer: initOdo,
+          kpl: kpl,
+          vehicleType: vehicleType,
+          branch: branch,
+          status: status,
+          registrationDate: registrationDate,
+          notes: notes,
+          createdBy: currentUser.uid,
+          createdByName: userData.name || currentUser.email,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        try {
+          await firestore.collection('vehicles').doc(plate).set(vehicleData);
+          
+          showAlert('تم حفظ المركبة بنجاح', 'success');
+          
+          // تفريغ الحقول
+          clearVehicleForm();
+          
+          loadVehiclesList();
+          
+        } catch (error) {
+          console.error('Error saving vehicle:', error);
+          
+          // التعامل مع أخطاء محددة
+          let errorMessage = 'حدث خطأ أثناء حفظ المركبة';
+          
+          if (error.code === 'permission-denied') {
+            errorMessage = 'لا تملك صلاحية إضافة مركبات جديدة';
+          } else if (error.code === 'already-exists') {
+            errorMessage = 'المركبة مسجلة بالفعل في النظام';
+          } else if (error.code === 'not-found') {
+            errorMessage = 'القسم المحدد غير موجود';
+          }
+          
+          showAlert(errorMessage, 'error');
+        }
+      });
+    }
+    
+    // زر تحديث المركبة
+    if ($('btnUpdateVehicle')) {
+      $('btnUpdateVehicle').addEventListener('click', async () => {
+        if (!checkIfCanManageVehicles()) {
+          showPermissionError('manageVehicles');
+          return;
+        }
+        
+        const plate = $('v_plate').value.trim();
+        const driver = $('v_driver').value.trim();
+        const phone = $('v_phone').value.trim();
+        const initOdo = parseInt($('v_init_odo').value);
+        const kpl = parseFloat($('v_kpl').value);
+        const vehicleType = $('v_type').value;
+        const branch = $('v_branch').value;
+        const status = $('v_status').value;
+        const registrationDate = $('v_registration_date').value;
+        const notes = $('v_notes').value.trim();
+        
+        // التحقق من الحقول
+        let hasError = false;
+        
+        // إخفاء رسائل الخطأ
+        document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+        
+        if (!plate) {
+          $('v_plate_error').classList.add('show');
+          $('v_plate').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!driver) {
+          $('v_driver_error').classList.add('show');
+          $('v_driver').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!(initOdo >= 0)) {
+          $('v_init_odo_error').classList.add('show');
+          $('v_init_odo').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!(kpl > 0)) {
+          $('v_kpl_error').classList.add('show');
+          $('v_kpl').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!vehicleType) {
+          $('v_type_error').classList.add('show');
+          $('v_type').classList.add('error');
+          hasError = true;
+        }
+        
+        if (!branch) {
+          $('v_branch_error').classList.add('show');
+          $('v_branch').classList.add('error');
+          hasError = true;
+        }
+        
+        if (hasError) {
+          showAlert('يرجى ملء جميع الحقول بشكل صحيح', 'error');
+          return;
+        }
+        
+        const vehicleData = {
+          plate: plate,
+          driver: driver,
+          phone: phone,
+          initialOdometer: initOdo,
+          lastOdometer: initOdo,
+          kpl: kpl,
+          vehicleType: vehicleType,
+          branch: branch,
+          status: status,
+          registrationDate: registrationDate,
+          notes: notes,
+          updatedBy: currentUser.uid,
+          updatedByName: userData.name || currentUser.email,
+          updatedAt: new Date().toISOString()
+        };
+        
+        try {
+          await firestore.collection('vehicles').doc(plate).update(vehicleData);
+          
+          showAlert('تم تحديث المركبة بنجاح', 'success');
+          
+          // إرجاع الأزرار إلى الحالة الأصلية
+          $('btnSaveVehicle').style.display = 'inline-flex';
+          $('btnUpdateVehicle').style.display = 'none';
+          $('btnClearVehicleForm').style.display = 'inline-flex';
+          $('btnCancelEdit').style.display = 'none';
+          
+          clearVehicleForm();
+          isEditingVehicle = false;
+          
+          loadVehiclesList();
+          
+        } catch (error) {
+          console.error('Error updating vehicle:', error);
+          showAlert('حدث خطأ أثناء تحديث المركبة', 'error');
+        }
+      });
+    }
+    
+    // زر مسح النموذج
+    if ($('btnClearVehicleForm')) {
+      $('btnClearVehicleForm').addEventListener('click', () => {
+        if (!checkIfCanManageVehicles()) {
+          showPermissionError('manageVehicles');
+          return;
+        }
+        clearVehicleForm();
+      });
+    }
+    
+    // زر إلغاء التعديل
+    if ($('btnCancelEdit')) {
+      $('btnCancelEdit').addEventListener('click', () => {
+        if (!checkIfCanManageVehicles()) {
+          showPermissionError('manageVehicles');
+          return;
+        }
+        clearVehicleForm();
+        $('btnSaveVehicle').style.display = 'inline-flex';
+        $('btnUpdateVehicle').style.display = 'none';
+        $('btnClearVehicleForm').style.display = 'inline-flex';
+        $('btnCancelEdit').style.display = 'none';
+        isEditingVehicle = false;
+      });
+    }
+    
+    // وظيفة مسح النموذج
+    function clearVehicleForm() {
+      $('v_plate').value = '';
+      $('v_driver').value = '';
+      $('v_phone').value = '';
+      $('v_init_odo').value = '';
+      $('v_kpl').value = '';
+      $('v_type').value = '';
+      $('v_branch').value = '';
+      $('v_status').value = 'نشط';
+      $('v_registration_date').value = '';
+      $('v_notes').value = '';
+      
+      // إخفاء رسائل الخطأ
+      document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+      
+      // إرجاع الأزرار إلى الحالة الأصلية
+      if (!isEditingVehicle) {
+        $('btnSaveVehicle').style.display = 'inline-flex';
+        $('btnUpdateVehicle').style.display = 'none';
+        $('btnClearVehicleForm').style.display = 'inline-flex';
+        $('btnCancelEdit').style.display = 'none';
+      }
+    }
+    
+    function exportVehicles() {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      showAlert('جاري تصدير بيانات المركبات...', 'info');
+    }
+    
+    function printVehicles() {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      showAlert('جاري تحضير الطباعة...', 'info');
+    }
+    
+    function importVehicles() {
+      if (!checkIfCanManageVehicles()) {
+        showPermissionError('manageVehicles');
+        return;
+      }
+      showAlert('وظيفة الاستيراد قيد التطوير', 'info');
+    }
+    
+    function changeVehiclesPage(direction) {
+      showAlert('تغيير الصفحة قيد التطوير', 'info');
+    }
+    
+    // ========== وظائف صفحة صرف الوقود - المعدلة بدون الأزرار العلوية ==========
+    function setupFuelPage() {
+      if (!checkIfCanDispenseFuel()) {
+        showPermissionError('dispenseFuel');
+        return;
+      }
+      
+      // تعيين التاريخ والوقت الحالي
+      if ($('f_date')) $('f_date').value = today();
+      if ($('f_time')) $('f_time').value = getCurrentTime();
+      
+      // تحميل إحصائيات اليوم
+      loadTodayFuelStats();
+      
+      // تحميل جدول العمليات اليومية
+      loadFuelDailyTable();
+      
+      // إعداد أحداث الحسابات
+      if ($('f_curr')) {
+        $('f_curr').addEventListener('input', recalc);
+      }
+      
+      if ($('f_price')) {
+        $('f_price').addEventListener('input', recalc);
+      }
+      
+      // زر تحميل بيانات المركبة
+      if ($('btnLoadVehicle')) {
+        $('btnLoadVehicle').addEventListener('click', loadVehicleForFuel);
+      }
+    }
+    
+    // إعداد أحداث أزرار صفحة صرف الوقود - فقط الأزرار السفلية
+    function setupFuelPageButtons() {
+      // ربط الأزرار في الأسفل بالوظائف
+      const bottomButtons = [
+        { id: 'saveFuelBtnBottom', func: saveFuelRecord },
+        { id: 'previewInvoiceBtnBottom', func: previewInvoiceModal },
+        { id: 'clearFuelBtnBottom', func: clearFuelForm }
+      ];
+      
+      // إضافة أحداث للأزرار في الأسفل
+      bottomButtons.forEach(button => {
+        const btn = $(button.id);
+        if (btn) {
+          btn.addEventListener('click', () => {
+            // التحقق من الصلاحيات قبل تنفيذ الوظيفة
+            if (!checkIfCanDispenseFuel()) {
+              showPermissionError('dispenseFuel');
+              return;
+            }
+            button.func();
+          });
+        }
+      });
+    }
+    
+    async function loadTodayFuelStats() {
+      try {
+        const todayDate = today();
+        const todaySnapshot = await firestore.collection('fuelRecords')
+          .where('date', '==', todayDate)
+          .get();
+        
+        let totalLiters = 0;
+        let totalCost = 0;
+        let uniqueVehicles = new Set();
+        
+        todaySnapshot.forEach(doc => {
+          const record = doc.data();
+          totalLiters += parseFloat(record.liters) || 0;
+          totalCost += parseFloat(record.totalCost) || 0;
+          uniqueVehicles.add(record.plate);
+        });
+        
+        $('todayFuelCount').textContent = todaySnapshot.size;
+        $('todayFuelLiters').textContent = fmt(totalLiters, 1);
+        $('todayFuelCost').textContent = fmt(totalCost, 2);
+        $('activeFuelVehicles').textContent = uniqueVehicles.size;
+        
+      } catch (error) {
+        console.error('Error loading today fuel stats:', error);
+      }
+    }
+    
+    async function quickSearchVehicle(query) {
+      if (!query) {
+        $('quickSearchResults').style.display = 'none';
+        return;
+      }
+      
+      try {
+        const snapshot = await firestore.collection('vehicles')
+          .where('plate', '>=', query)
+          .where('plate', '<=', query + '\uf8ff')
+          .limit(5)
+          .get();
+        
+        if (snapshot.empty) {
+          $('quickSearchResults').innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--text-gray);">لا توجد نتائج</div>';
+        } else {
+          let resultsHTML = '<div style="display: grid; gap: 0.5rem;">';
+          snapshot.forEach(doc => {
+            const vehicle = doc.data();
+            resultsHTML += `
+              <div class="fuel-record-card clickable" onclick="selectQuickVehicle('${vehicle.plate}')">
+                <div class="fuel-record-header">
+                  <div class="fuel-record-title">${vehicle.plate}</div>
+                  <div class="fuel-record-id">${vehicle.driver}</div>
+                </div>
+                <div class="fuel-record-details">
+                  <div class="fuel-record-item">
+                    <span class="fuel-record-label">القسم:</span>
+                    <span class="fuel-record-value">${vehicle.branch}</span>
+                  </div>
+                  <div class="fuel-record-item">
+                    <span class="fuel-record-label">النوع:</span>
+                    <span class="fuel-record-value">${vehicle.vehicleType}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          resultsHTML += '</div>';
+          $('quickSearchResults').innerHTML = resultsHTML;
+        }
+        
+        $('quickSearchResults').style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error in quick search:', error);
+      }
+    }
+    
+    function selectQuickVehicle(plate) {
+      $('f_plate').value = plate;
+      $('quickSearchResults').style.display = 'none';
+      loadVehicleForFuel();
+    }
+    
+    async function loadVehicleForFuel() {
+      if (!checkIfCanDispenseFuel()) {
+        showPermissionError('dispenseFuel');
+        return;
+      }
+      
+      const plate = $('f_plate').value.trim();
+      if (!plate) { 
+        showAlert('يرجى إدخال لوحة المركبة', 'error');
+        hide($('sectionLoaded'));
+        return; 
+      }
+      
+      try {
+        const vehicleDoc = await firestore.collection('vehicles').doc(plate).get();
+        
+        if (!vehicleDoc.exists) { 
+          showAlert('المركبة غير مسجلة في النظام', 'error');
+          hide($('sectionLoaded'));
+          return; 
+        }
+        
+        const vehicleData = vehicleDoc.data();
+        
+        currentPlate = plate;
+        currentVehicle = vehicleData;
+        show($('sectionLoaded'));
+        
+        $('f_driver').value = currentVehicle.driver || '';
+        
+        const vehicleType = currentVehicle.vehicleType || 'بنزين';
+        $('f_type_text').textContent = vehicleType;
+        
+        let badgeClass = 'type-petrol';
+        let badgeIcon = 'fa-gas-pump';
+        
+        if (vehicleType === 'جاز') {
+          badgeClass = 'type-diesel';
+          badgeIcon = 'fa-oil-can';
+        } else if (vehicleType === 'مولد') {
+          badgeClass = 'type-generator';
+          badgeIcon = 'fa-bolt';
+        }
+        
+        $('f_type_badge').className = `vehicle-type ${badgeClass}`;
+        $('f_type_badge').innerHTML = `<i class="fas ${badgeIcon}"></i> ${vehicleType}`;
+        
+        $('f_prev').value = currentVehicle.lastOdometer ?? '';
+        $('f_kpl').value = currentVehicle.kpl ?? '';
+        $('f_date').value = today();
+        $('f_time').value = getCurrentTime();
+        
+        ['f_curr','f_distance','f_liters','f_gallons','f_price','f_cost','f_notes'].forEach(id => {
+          if ($(id)) $(id).value = '';
+        });
+        
+        showAlert(`تم تحميل بيانات المركبة ${plate}`, 'success');
+        
+      } catch (error) {
+        console.error('Error loading vehicle:', error);
+        showAlert('حدث خطأ أثناء تحميل بيانات المركبة', 'error');
+      }
+    }
+    
+    function recalc() {
+      const prev = parseFloat($('f_prev').value);
+      const curr = parseFloat($('f_curr').value);
+      const kpl  = parseFloat($('f_kpl').value);
+      const price = parseFloat($('f_price').value);
+
+      const distance = (isFinite(curr) && isFinite(prev) && curr > prev) ? (curr - prev) : 0;
+      if ($('f_distance')) $('f_distance').value = distance ? fmt(distance,1) : '';
+
+      const liters = (distance > 0 && isFinite(kpl) && kpl > 0) ? (distance / kpl) : 0;
+      const gallons = liters > 0 ? (liters / 4.546) : 0;
+      
+      if (liters > 0 && $('f_liters')) {
+        $('f_liters').value = `${fmt(liters,2)} لتر`;
+      } else if ($('f_liters')) {
+        $('f_liters').value = '';
+      }
+
+      if (gallons > 0 && $('f_gallons')) {
+        $('f_gallons').value = `${fmt(gallons,2)} جالون`;
+      } else if ($('f_gallons')) {
+        $('f_gallons').value = '';
+      }
+
+      const cost = (liters > 0 && price > 0) ? (liters * price) : 0;
+      if ($('f_cost')) $('f_cost').value = cost ? fmt(cost,2) : '';
+    }
+    
+    async function saveFuelRecord() {
+      if (!checkIfCanDispenseFuel()) {
+        showPermissionError('dispenseFuel');
+        return;
+      }
+      
+      if (!currentPlate || !currentVehicle) { 
+        showAlert('يرجى تحميل بيانات المركبة أولاً', 'error');
+        return; 
+      }
+      
+      const prev = Number($('f_prev').value);
+      const curr = Number($('f_curr').value);
+      const kpl  = Number($('f_kpl').value);
+      const price = Number($('f_price').value);
+      const dist = Number($('f_distance').value);
+      const liters = parseFloat($('f_liters').value) || 0;
+      const cost = Number($('f_cost').value);
+      const date = $('f_date').value || today();
+      const time = $('f_time').value || getCurrentTime();
+      const notes = $('f_notes').value.trim();
+      const vehicleType = currentVehicle.vehicleType || 'بنزين';
+
+      if (!(curr > prev)) { 
+        showAlert('العداد الجديد يجب أن يكون أكبر من العداد السابق', 'error');
+        return; 
+      }
+      
+      if (!(kpl > 0)) { 
+        showAlert('معدل استهلاك غير صحيح', 'error');
+        return; 
+      }
+      
+      if (!(price > 0)) { 
+        showAlert('يرجى إدخال سعر اللتر', 'error');
+        return; 
+      }
+      
+      if (!(dist > 0) || !(liters > 0)) { 
+        showAlert('البيانات الحسابية غير صحيحة', 'error');
+        return; 
+      }
+      
+      const opNum = await generateOperationNumber();
+      const opId = `Adiyat-Op${zeroPad(opNum, 3)}`;
+      
+      const gallons = (liters / 4.546).toFixed(2);
+      
+      const record = {
+        date: date,
+        time: time,
+        plate: currentPlate,
+        driver: currentVehicle.driver || '',
+        vehicleType: vehicleType,
+        prevOdometer: prev,
+        newOdometer: curr,
+        distance: dist,
+        kpl: kpl,
+        liters: liters,
+        gallons: gallons,
+        pricePerLiter: price,
+        totalCost: cost,
+        notes: notes,
+        opId: opId,
+        branch: userData.branch || 'الخرطوم',
+        userId: currentUser.uid,
+        userName: userData.name || currentUser.email,
+        createdAt: new Date().toISOString()
+      };
+      
+      // تحسين سرعة الحفظ باستخدام batch write
+      const batch = firestore.batch();
+      
+      try {
+        // إضافة سجل الوقود
+        const fuelRecordRef = firestore.collection('fuelRecords').doc();
+        batch.set(fuelRecordRef, record);
+        
+        // تحديث عداد المركبة
+        const vehicleRef = firestore.collection('vehicles').doc(currentPlate);
+        batch.update(vehicleRef, {
+          lastOdometer: curr,
+          updatedAt: new Date().toISOString()
+        });
+        
+        // تنفيذ العمليات دفعة واحدة
+        await batch.commit();
+        
+        showAlert('تم حفظ عملية الصرف وتحديث عداد المركبة', 'success');
+        
+        // حفظ السجل للمعاينة
+        currentRecordForInvoice = record;
+        
+        clearFuelForm();
+        
+        // تحديث إحصائيات اليوم
+        loadTodayFuelStats();
+        
+        // تحديث جدول اليوم
+        loadFuelDailyTable();
+        
+        // فتح نافذة معاينة الفاتورة
+        previewInvoiceModal();
+        
+      } catch (error) {
+        console.error('Error saving fuel record:', error);
+        
+        // التعامل مع أخطاء محددة
+        let errorMessage = 'حدث خطأ أثناء حفظ العملية';
+        
+        if (error.code === 'permission-denied') {
+          errorMessage = 'لا تملك صلاحية تسجيل عمليات صرف الوقود';
+        } else if (error.code === 'not-found') {
+          errorMessage = 'المركبة غير موجودة في النظام';
+        } else if (error.code === 'resource-exhausted') {
+          errorMessage = 'تم تجاوز الحد المسموح به للعمليات، يرجى المحاولة لاحقاً';
+        }
+        
+        showAlert(errorMessage, 'error');
+      }
+    }
+    
+    // وظيفة معاينة الفاتورة في نافذة منبثقة
+    function previewInvoiceModal() {
+      if (!currentRecordForInvoice) {
+        showAlert('لا توجد فاتورة للمعاينة', 'error');
+        return;
+      }
+      
+      // ملء بيانات الفاتورة
+      $('invoiceNumber').textContent = currentRecordForInvoice.opId || 'N/A';
+      $('invoiceBranch').textContent = currentRecordForInvoice.branch || 'غير معروف';
+      $('invoicePlate').textContent = currentRecordForInvoice.plate || 'غير محدد';
+      $('invoiceDriver').textContent = currentRecordForInvoice.driver || 'غير محدد';
+      $('invoiceVehicleType').textContent = currentRecordForInvoice.vehicleType || 'بنزين';
+      $('invoicePrevOdometer').textContent = fmt(currentRecordForInvoice.prevOdometer || 0, 0) + ' كم';
+      $('invoiceNewOdometer').textContent = fmt(currentRecordForInvoice.newOdometer || 0, 0) + ' كم';
+      $('invoiceDistance').textContent = fmt(currentRecordForInvoice.distance || 0, 1) + ' كم';
+      $('invoiceLiters').textContent = fmt(currentRecordForInvoice.liters || 0, 2) + ' لتر';
+      $('invoiceLiters2').textContent = fmt(currentRecordForInvoice.liters || 0, 2) + ' لتر';
+      $('invoiceGallons').textContent = fmt(currentRecordForInvoice.gallons || 0, 2) + ' جالون';
+      $('invoicePrice').textContent = fmt(currentRecordForInvoice.pricePerLiter || 0, 2) + ' جنيه/لتر';
+      $('invoiceTotal').textContent = fmt(currentRecordForInvoice.totalCost || 0, 2) + ' جنيه';
+      
+      // إظهار النافذة
+      show($('invoiceModal'));
+    }
+    
+    // إغلاق نافذة الفاتورة
+    function closeInvoiceModal() {
+      hide($('invoiceModal'));
+    }
+    
+    // طباعة الفاتورة
+    function printInvoice() {
+      if (!currentRecordForInvoice) {
+        showAlert('لا توجد فاتورة للطباعة', 'error');
+        return;
+      }
+      
+      printEnhancedInvoice(currentRecordForInvoice, true);
+    }
+    
+    // حفظ الفاتورة
+    function saveInvoice() {
+      if (!currentRecordForInvoice) {
+        showAlert('لا توجد فاتورة للحفظ', 'error');
+        return;
+      }
+      
+      showAlert('تم حفظ الفاتورة بنجاح', 'success');
+      closeInvoiceModal();
+    }
+    
+    function quickFuel(type, liters) {
+      if (!checkIfCanDispenseFuel()) {
+        showPermissionError('dispenseFuel');
+        return;
+      }
+      showAlert(`تم اختيار ${type} ${liters} لتر`, 'info');
+    }
+    
+    // وظيفة مسح نموذج الوقود
+    function clearFuelForm() {
+      $('f_plate').value = '';
+      $('f_driver').value = '';
+      $('f_prev').value = '';
+      $('f_curr').value = '';
+      $('f_distance').value = '';
+      $('f_liters').value = '';
+      $('f_gallons').value = '';
+      $('f_price').value = '';
+      $('f_cost').value = '';
+      $('f_notes').value = '';
+      
+      hide($('sectionLoaded'));
+      
+      // إخفاء رسائل الخطأ
+      document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    }
+    
+    async function generateOperationNumber() {
+      try {
+        const counterRef = firestore.collection('counters').doc('operationCounter');
+        const transaction = await firestore.runTransaction(async (transaction) => {
+          const doc = await transaction.get(counterRef);
+          let newCount = 1;
+          
+          if (doc.exists) {
+            newCount = doc.data().value + 1;
+          }
+          
+          transaction.set(counterRef, { value: newCount });
+          return newCount;
+        });
+        
+        return transaction;
+      } catch (error) {
+        console.error('Error generating operation number:', error);
+        return Date.now();
+      }
+    }
+
+    // ========== وظائف جدول عمليات الصرف اليومية (الجديد) ==========
+    async function loadFuelDailyTable() {
+      const dateFilter = $('dailyFuelDateFilter').value || today();
+      const tbody = $('dailyFuelTableBody');
+      
+      tbody.innerHTML = '<tr><td colspan="8"><div class="loader"><div class="spinner"></div></td></tr>';
+      
+      try {
+        const snapshot = await firestore.collection('fuelRecords')
+          .where('date', '==', dateFilter)
+          .orderBy('time', 'desc')
+          .get();
+        
+        dailyFuelCache = [];
+        
+        if (snapshot.empty) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-gray);">لا توجد عمليات في هذا التاريخ</td></tr>';
+          return;
+        }
+        
+        snapshot.forEach(doc => {
+          dailyFuelCache.push(doc.data());
+        });
+        
+        tbody.innerHTML = '';
+        dailyFuelCache.forEach((log, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${log.time || '--:--'}</td>
+            <td><span class="badge badge-primary">${log.plate}</span></td>
+            <td>${log.driver}</td>
+            <td>${fmt(log.newOdometer, 0)}</td>
+            <td>${fmt(log.distance, 1)}</td>
+            <td>${fmt(log.liters, 2)}</td>
+            <td><div class="cost-cell">${fmt(log.totalCost, 2)}</div></td>
+          `;
+          tbody.appendChild(tr);
+        });
+        
+      } catch (error) {
+        console.error('Error loading daily fuel table:', error);
+        showAlert('حدث خطأ أثناء تحميل البيانات', 'error');
+      }
+    }
+    
+    async function exportDailyFuelToExcel() {
+      if (dailyFuelCache.length === 0) {
+        showAlert('لا توجد بيانات للتصدير', 'warning');
+        return;
+      }
+      
+      let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+      csvContent += "الوقت,اللوحة,السائق,العداد الجديد,المسافة,اللترات,التكلفة\r\n";
+      
+      dailyFuelCache.forEach(record => {
+        const row = [
+          record.time || '',
+          record.plate || '',
+          record.driver || '',
+          record.newOdometer || 0,
+          record.distance || 0,
+          record.liters || 0,
+          record.totalCost || 0
+        ].join(',');
+        csvContent += row + '\r\n';
+      });
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `عمليات_صرف_${$('dailyFuelDateFilter').value}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showAlert('تم تصدير البيانات بنجاح', 'success');
+    }
+    
+    function printDailyFuelTable() {
+      if (dailyFuelCache.length === 0) {
+        showAlert('لا توجد بيانات للطباعة', 'warning');
+        return;
+      }
+      
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      const dateStr = displayDate($('dailyFuelDateFilter').value);
+      
+      let tableHTML = `<table style="width:100%; border-collapse: collapse; font-family: Cairo, sans-serif;">
+        <thead>
+          <tr style="background: #4f46e5; color: white;">
+            <th style="padding: 10px; border: 1px solid #ddd;">#</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">الوقت</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">اللوحة</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">السائق</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">العداد الجديد</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">المسافة</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">اللترات</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">التكلفة</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      
+      dailyFuelCache.forEach((log, index) => {
+        tableHTML += `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${index + 1}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${log.time}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${log.plate}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${log.driver}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${fmt(log.newOdometer,0)}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${fmt(log.distance,1)}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${fmt(log.liters,2)}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${fmt(log.totalCost,2)}</td>
+          </tr>
+        `;
+      });
+      
+      tableHTML += `</tbody></table>`;
+      
+      const html = `
+        <!DOCTYPE html>
+        <html dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <title>طباعة عمليات الصرف</title>
+          <style>
+            body { font-family: Cairo, sans-serif; padding: 20px; }
+            h2 { text-align: center; margin-bottom: 20px; color: #4f46e5; }
+            .date-label { text-align: center; font-weight: bold; margin-bottom: 20px; }
+          </style>
+        </head>
+        <body>
+          <h2>عمليات الصرف اليومية</h2>
+          <div class="date-label">التاريخ: ${dateStr}</div>
+          ${tableHTML}
+          <script>window.onload = function() { window.print(); setTimeout(() => window.close(), 1000); }<\/script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(html);
+      printWindow.document.close();
+    }
+    
+    // ========== وظائف صفحة سجل العمليات ==========
+    
+    async function loadLogs() {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      const dateFrom = $('filterDateFrom').value;
+      const dateTo = $('filterDateTo').value;
+      const branch = $('filterBranch').value;
+      const vehicleType = $('filterVehicleType').value;
+      const driver = $('filterDriver').value.trim();
+      const plate = $('filterPlate').value.trim();
+      
+      try {
+        // استخدام حقل واحد للفرز لتجنب الحاجة إلى فهرس مركب
+        let query = firestore.collection('fuelRecords').orderBy('date', 'desc');
+        
+        // تطبيق فلاتر التاريخ
+        if (dateFrom && dateTo) {
+          query = query.where('date', '>=', dateFrom).where('date', '<=', dateTo);
+        }
+        
+        if (branch !== 'all') {
+          query = query.where('branch', '==', branch);
+        }
+        
+        if (vehicleType !== 'all') {
+          query = query.where('vehicleType', '==', vehicleType);
+        }
+        
+        const snapshot = await query.get();
+        logsCache = [];
+        
+        snapshot.forEach(doc => {
+          logsCache.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        
+        // تطبيق الفلاتر الإضافية
+        let filteredLogs = logsCache;
+        
+        if (driver) {
+          filteredLogs = filteredLogs.filter(log => 
+            log.driver && log.driver.toLowerCase().includes(driver.toLowerCase())
+          );
+        }
+        
+        if (plate) {
+          filteredLogs = filteredLogs.filter(log => 
+            log.plate && log.plate.toLowerCase().includes(plate.toLowerCase())
+          );
+        }
+        
+        renderLogsTable(filteredLogs);
+        updateLogsStats(filteredLogs);
+        
+      } catch (error) {
+        console.error('Error loading logs:', error);
+        showAlert('حدث خطأ أثناء تحميل السجلات', 'error');
+      }
+    }
+    
+    function renderLogsTable(logs) {
+      const tbody = $('logsTableBody');
+      
+      if (logs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="14" style="text-align: center; padding: 2rem; color: var(--text-gray);">
+              <div class="empty-state-icon">
+                <i class="fas fa-history"></i>
+              </div>
+              <div class="empty-state-title">لا توجد سجلات</div>
+              <div class="empty-state-description">لم يتم تسجيل أي عمليات صرف في الفترة المحددة</div>
+            </td>
+          </tr>
+        `;
+        return;
+       }
+      
+      
+      tbody.innerHTML = '';
+      
+      logs.forEach((log, index) => {
+        let typeBadgeClass = 'type-petrol';
+        let typeIcon = 'fa-gas-pump';
+        if (log.vehicleType === 'جاز') {
+          typeBadgeClass = 'type-diesel';
+          typeIcon = 'fa-oil-can';
+        } else if (log.vehicleType === 'مولد') {
+          typeBadgeClass = 'type-generator';
+          typeIcon = 'fa-bolt';
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <strong style="font-size: var(--text-sm); color: var(--text-dark);">${displayDate(log.date)}</strong>
+              <small style="font-size: var(--text-xs); color: var(--text-gray);">${log.time || '--:--'}</small>
+            </div>
+          </td>
+          <td>${log.time || '--:--'}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="badge badge-warning" style="font-size: var(--text-xs);">${log.plate}</span>
+              <span class="vehicle-type ${typeBadgeClass}" style="font-size: 10px; padding: 2px 6px;">
+                <i class="fas ${typeIcon}"></i>
+              </span>
+            </div>
+          </td>
+          <td>${log.driver || 'غير محدد'}</td>
+          <td>
+            <span class="badge badge-info" style="font-size: var(--text-xs);">${log.branch || 'غير معروف'}</span>
+          </td>
+          <td>
+            <span class="vehicle-type ${typeBadgeClass}" style="font-size: var(--text-xs);">
+              <i class="fas ${typeIcon}"></i> ${log.vehicleType || 'بنزين'}
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-xs); color: var(--text-gray);">السابق:</span>
+              <strong style="font-size: var(--text-sm); color: var(--primary);">${fmt(log.prevOdometer || 0, 0)}</strong>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-xs); color: var(--text-gray);">الجديد:</span>
+              <strong style="font-size: var(--text-sm); color: var(--success);">${fmt(log.newOdometer || 0, 0)}</strong>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-xs); color: var(--text-gray);">المسافة:</span>
+              <strong style="font-size: var(--text-sm); color: var(--accent);">${fmt(log.distance || 0, 1)} كم</strong>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-xs); color: var(--text-gray);">اللترات:</span>
+              <strong style="font-size: var(--text-sm); color: var(--primary);">${fmt(log.liters || 0, 2)}</strong>
+            </div>
+          </td>
+          <td>
+            <div style="background: linear-gradient(135deg, var(--danger), #dc2626); color: white; padding: 4px 8px; border-radius: 6px; text-align: center;">
+              <div style="font-size: var(--text-xs); opacity: 0.9;">الإجمالي</div>
+              <strong style="font-size: var(--text-sm);">${fmt(log.totalCost || 0, 2)} ج</strong>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 0.25rem;">
+              <button class="btn btn-sm btn-primary" onclick="previewLogInvoice('${log.id}')" title="معاينة">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn btn-sm btn-success" onclick="printLogInvoice('${log.id}')" title="طباعة">
+                <i class="fas fa-print"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="deleteLogRecord('${log.id}')" title="حذف">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(tr);
+      });
+    }
+    
+    function updateLogsStats(logs) {
+      let totalDistance = 0;
+      let totalLiters = 0;
+      let totalCost = 0;
+      let count = logs.length;
+      
+      logs.forEach(log => {
+        totalDistance += parseFloat(log.distance) || 0;
+        totalLiters += parseFloat(log.liters) || 0;
+        totalCost += parseFloat(log.totalCost) || 0;
+      });
+      
+      const avgKpl = totalDistance > 0 ? (totalDistance / totalLiters).toFixed(2) : 0;
+      const avgCost = totalDistance > 0 ? (totalCost / totalDistance).toFixed(2) : 0;
+      
+      // تحديث الملخص الرئيسي
+      $('totalOperations').textContent = count;
+      $('totalLiters').textContent = fmt(totalLiters, 2);
+      $('totalCost').textContent = fmt(totalCost, 2);
+      $('avgConsumption').textContent = avgKpl;
+      
+      // تحديث الإحصائيات المفصلة
+      $('statCount').textContent = count;
+      $('statDistance').textContent = fmt(totalDistance, 1);
+      $('statLiters').textContent = fmt(totalLiters, 2);
+      $('statCost').textContent = fmt(totalCost, 2);
+      $('statAvgKpl').textContent = avgKpl;
+      $('statAvgCost').textContent = avgCost;
+    }
+    
+    function clearFilters() {
+      // إعادة تعيين الفلاتر
+      const todayDate = today();
+      
+      $('filterDateFrom').value = todayDate;
+      $('filterDateTo').value = todayDate;
+      
+      $('filterBranch').value = 'all';
+      $('filterVehicleType').value = 'all';
+      $('filterDriver').value = '';
+      $('filterPlate').value = '';
+      
+      loadLogs();
+      showAlert('تم مسح جميع الفلاتر', 'info');
+    }
+    
+    function refreshLogs() {
+      loadLogs();
+      showAlert('تم تحديث السجلات', 'success');
+    }
+    
+    async function previewLogInvoice(recordId) {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      try {
+        const doc = await firestore.collection('fuelRecords').doc(recordId).get();
+        if (doc.exists) {
+          currentRecordForInvoice = doc.data();
+          previewInvoiceModal();
+        } else {
+          showAlert('تعذر جلب بيانات المعاينة', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading record:', error);
+        showAlert('حدث خطأ أثناء تحميل السجل', 'error');
+      }
+    }
+    
+    async function printLogInvoice(recordId) {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      try {
+        const doc = await firestore.collection('fuelRecords').doc(recordId).get();
+        if (doc.exists) {
+          printEnhancedInvoice(doc.data(), true); // true يعني الطباعة التلقائية
+        } else {
+          showAlert('تعذر جلب بيانات المعاينة', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading record:', error);
+        showAlert('حدث خطأ أثناء تحميل السجل', 'error');
+      }
+    }
+    
+    async function deleteLogRecord(recordId) {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      if (!confirm('هل أنت متأكد من حذف هذا السجل؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+        return;
+      }
+      
+      try {
+        await firestore.collection('fuelRecords').doc(recordId).delete();
+        showAlert('تم حذف السجل بنجاح', 'success');
+        loadLogs();
+      } catch (error) {
+        console.error('Error deleting log record:', error);
+        showAlert('حدث خطأ أثناء حذف السجل', 'error');
+      }
+    }
+    
+    function changeLogsPage(direction) {
+      showAlert('تغيير الصفحة قيد التطوير', 'info');
+    }
+
+    // ========== وظيفة طباعة جدول السجلات المفلترة ==========
+    function printLogsTable() {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      // الحصول على بيانات الجدول الحالي
+      const tableBody = document.getElementById('logsTableBody');
+      if (!tableBody) {
+        showAlert('لا توجد بيانات للطباعة', 'warning');
+        return;
+      }
+      
+      // التحقق من وجود بيانات
+      const rows = tableBody.querySelectorAll('tr');
+      if (rows.length === 0 || (rows.length === 1 && rows[0].textContent.includes('لا توجد سجلات'))) {
+        showAlert('لا توجد سجلات للطباعة', 'warning');
+        return;
+      }
+      
+      // إنشاء نافذة طباعة جديدة
+      const printWindow = window.open('', '_blank', 'width=1000,height=800');
+      
+      // الحصول على تاريخ الفلترة الحالي
+      const dateFrom = document.getElementById('filterDateFrom').value;
+      const dateTo = document.getElementById('filterDateTo').value;
+      const branch = document.getElementById('filterBranch').value;
+      const vehicleType = document.getElementById('filterVehicleType').value;
+      const driver = document.getElementById('filterDriver').value.trim();
+      const plate = document.getElementById('filterPlate').value.trim();
+      
+      // تحديد عنوان التقرير بناءً على الفلاتر
+      let reportTitle = 'سجل عمليات صرف الوقود';
+      let filterDescription = '';
+      
+      if (dateFrom && dateTo) {
+        filterDescription += `الفترة: ${displayDate(dateFrom)} إلى ${displayDate(dateTo)}`;
+      }
+      
+      if (branch !== 'all') {
+        filterDescription += ` • القسم: ${branch}`;
+      }
+      
+      if (vehicleType !== 'all') {
+        filterDescription += ` • نوع المركبة: ${vehicleType}`;
+      }
+      
+      if (driver) {
+        filterDescription += ` • السائق: ${driver}`;
+      }
+      
+      if (plate) {
+        filterDescription += ` • اللوحة: ${plate}`;
+      }
+      
+      // استخراج البيانات من الجدول الحالي
+      let tableRowsHTML = '';
+      rows.forEach((row, index) => {
+        if (row.textContent.includes('لا توجد سجلات')) {
+          return;
+        }
+        
+        const cells = row.querySelectorAll('td');
+        if (cells.length > 0) {
+          // استخراج البيانات من الخلايا (باستثناء عمود الإجراءات)
+          let rowData = '<tr>';
+          for (let i = 0; i < cells.length - 1; i++) { // -1 لتجاهل عمود الإجراءات
+            rowData += cells[i].outerHTML;
+          }
+          rowData += '</tr>';
+          tableRowsHTML += rowData;
+        }
+      });
+      
+      // إنشاء جدول الطباعة
+      const tableHTML = `
+        <table class="print-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>التاريخ</th>
+              <th>الوقت</th>
+              <th>اللوحة</th>
+              <th>السائق</th>
+              <th>القسم</th>
+              <th>النوع</th>
+              <th>العداد السابق</th>
+              <th>العداد الجديد</th>
+              <th>المسافة</th>
+              <th>اللترات</th>
+              <th>التكلفة</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRowsHTML}
+          </tbody>
+        </table>
+      `;
+      
+      // إنشاء محتوى HTML للطباعة
+      const html = `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+          <meta charset="UTF-8">
+          <title>${reportTitle}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: 'Cairo', sans-serif; 
+              padding: 15px; 
+              background: white; 
+              color: #333; 
+              line-height: 1.4;
+              font-size: 12px;
+            }
+            .print-header {
+              text-align: center;
+              margin-bottom: 20px;
+              padding-bottom: 15px;
+              border-bottom: 2px solid #4f46e5;
+            }
+            .print-header img {
+              max-width: 150px;
+              height: auto;
+              margin-bottom: 10px;
+            }
+            .print-header h1 {
+              color: #4f46e5;
+              margin-bottom: 5px;
+              font-size: 22px;
+            }
+            .print-header .subtitle {
+              color: #666;
+              font-size: 14px;
+              margin-bottom: 5px;
+            }
+            .print-filters {
+              background: #f8fafc;
+              padding: 10px 15px;
+              border-radius: 8px;
+              margin-bottom: 20px;
+              font-size: 12px;
+              color: #4f46e5;
+              text-align: center;
+              font-weight: 600;
+            }
+            .print-summary {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 15px;
+              margin-bottom: 20px;
+            }
+            .summary-card {
+              background: #f8fafc;
+              border: 1px solid #e2e8f0;
+              border-radius: 8px;
+              padding: 12px;
+              text-align: center;
+            }
+            .summary-value {
+              font-size: 20px;
+              font-weight: 700;
+              color: #4f46e5;
+              margin-bottom: 5px;
+            }
+            .summary-label {
+              font-size: 11px;
+              color: #64748b;
+            }
+            .print-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            .print-table th {
+              background: #4f46e5;
+              color: white;
+              padding: 10px 8px;
+              text-align: right;
+              font-size: 11px;
+              border: 1px solid #4338ca;
+            }
+            .print-table td {
+              padding: 8px;
+              border: 1px solid #e2e8f0;
+              font-size: 10px;
+              vertical-align: middle;
+            }
+            .print-table tr:nth-child(even) {
+              background-color: #f8fafc;
+            }
+            .print-footer {
+              margin-top: 30px;
+              padding-top: 15px;
+              border-top: 1px dashed #cbd5e1;
+              text-align: center;
+              font-size: 11px;
+              color: #64748b;
+            }
+            .vehicle-type {
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 9px;
+              font-weight: 600;
+              display: inline-block;
+            }
+            .type-petrol {
+              background: #3b82f6;
+              color: white;
+            }
+            .type-diesel {
+              background: #06b6d4;
+              color: white;
+            }
+            .type-generator {
+              background: #f59e0b;
+              color: white;
+            }
+            .badge {
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 9px;
+              font-weight: 600;
+              display: inline-block;
+            }
+            .badge-primary {
+              background: #3b82f6;
+              color: white;
+            }
+            .badge-info {
+              background: #06b6d4;
+              color: white;
+            }
+            .cost-cell {
+              background: #ef4444;
+              color: white;
+              padding: 4px 8px;
+              border-radius: 4px;
+              text-align: center;
+              font-weight: 700;
+              font-size: 10px;
+            }
+            @media print {
+              body { padding: 8mm; }
+              .no-print { display: none !important; }
+              .print-table th {
+                font-size: 9px;
+                padding: 6px 4px;
+              }
+              .print-table td {
+                font-size: 8px;
+                padding: 4px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-header">
+            <img src="https://adiyatdist.com/wp-content/uploads/2024/12/logo-horizontal.png" alt="شعار الشركة">
+            <h1>${reportTitle}</h1>
+            <div class="subtitle">شركة عاديات للتسويق والتوزيع</div>
+            <div class="subtitle">${new Date().toLocaleDateString('ar-SA')}</div>
+          </div>
+          
+          ${filterDescription ? `<div class="print-filters">${filterDescription}</div>` : ''}
+          
+          <div class="print-summary">
+            <div class="summary-card">
+              <div class="summary-value">${document.getElementById('totalOperations').textContent}</div>
+              <div class="summary-label">إجمالي العمليات</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-value">${document.getElementById('totalLiters').textContent}</div>
+              <div class="summary-label">إجمالي اللترات</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-value">${document.getElementById('totalCost').textContent}</div>
+              <div class="summary-label">إجمالي التكلفة</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-value">${document.getElementById('avgConsumption').textContent}</div>
+              <div class="summary-label">متوسط الاستهلاك</div>
+            </div>
+          </div>
+          
+          ${tableHTML}
+          
+          <div class="print-footer">
+            <div>تم إنشاء التقرير بواسطة نظام إدارة الوقود</div>
+            <div>تاريخ الطباعة: ${new Date().toLocaleDateString('ar-SA-u-ca-gregory')} ${new Date().toLocaleTimeString('ar-SA')}</div>
+            <div>تم الطباعة بواسطة: ${userData.name || currentUser.email}</div>
+          </div>
+          
+          <script>
+            window.onload = function() {
+              setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                  window.close();
+                }, 1000);
+              }, 500);
+            };
+          <\/script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(html);
+      printWindow.document.close();
+    }
+    
+    // ========== وظائف تصدير البيانات ==========
+    async function exportHistoryToExcel() {
+      if (!checkIfCanViewReports()) {
+        showPermissionError('viewReports');
+        return;
+      }
+      
+      const dateFrom = $('filterDateFrom').value;
+      const dateTo = $('filterDateTo').value;
+      const branch = $('filterBranch').value;
+      const vehicleType = $('filterVehicleType').value;
+      const driver = $('filterDriver').value.trim();
+      const plate = $('filterPlate').value.trim();
+      
+      try {
+        let query = firestore.collection('fuelRecords').orderBy('date', 'desc');
+        
+        // تطبيق فلاتر التاريخ
+        if (dateFrom && dateTo) {
+          query = query.where('date', '>=', dateFrom).where('date', '<=', dateTo);
+        }
+        
+        if (branch !== 'all') {
+          query = query.where('branch', '==', branch);
+        }
+        
+        if (vehicleType !== 'all') {
+          query = query.where('vehicleType', '==', vehicleType);
+        }
+        
+        const snapshot = await query.get();
+        const records = [];
+        
+        snapshot.forEach(doc => {
+          records.push(doc.data());
+        });
+        
+        if (records.length === 0) {
+          showAlert('لا توجد بيانات للتصدير', 'warning');
+          return;
+        }
+        
+        // إنشاء CSV
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+        
+        // رأس الملف
+        const headers = [
+          'رقم العملية',
+          'التاريخ',
+          'الوقت',
+          'القسم',
+          'لوحة المركبة',
+          'السائق',
+          'نوع المركبة',
+          'العداد السابق',
+          'العداد الجديد',
+          'المسافة (كم)',
+          'اللترات',
+          'الجالونات',
+          'سعر اللتر',
+          'المبلغ الإجمالي',
+          'ملاحظات'
+        ].join(',');
+        
+        csvContent += headers + '\r\n';
+        
+        // البيانات
+        records.forEach(record => {
+          const row = [
+            record.opId || '',
+            record.date || '',
+            record.time || '',
+            record.branch || '',
+            record.plate || '',
+            record.driver || '',
+            record.vehicleType || '',
+            record.prevOdometer || 0,
+            record.newOdometer || 0,
+            record.distance || 0,
+            record.liters || 0,
+            record.gallons || 0,
+            record.pricePerLiter || 0,
+            record.totalCost || 0,
+            `"${(record.notes || '').replace(/"/g, '""')}"`
+          ].join(',');
+          
+          csvContent += row + '\r\n';
+        });
+        
+        // تنزيل الملف
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `سجل_العمليات_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showAlert('تم تصدير البيانات بنجاح', 'success');
+        
+      } catch (error) {
+        console.error('Error exporting data:', error);
+        showAlert('حدث خطأ أثناء تصدير البيانات', 'error');
+      }
+    }
+    
+    // ========== طباعة الفاتورة المحسنة ==========
+    // ========== طباعة الفاتورة المحسنة (تعبئة الورقة بالكامل) ==========
+function printEnhancedInvoice(record, autoPrint = true) {
+  const currentTime = record.time || getCurrentTime();
+  const gallons = record.gallons || (record.liters ? (record.liters / 4.546).toFixed(2) : '0.00');
+  
+  // فتح نافذة بالحجم المناسب لصفحة A4
+  const printWindow = window.open('', '_blank', 'width=800,height=1120');
+  
+  // حساب المعلومات الإضافية
+  const consumptionRate = record.distance && record.liters 
+    ? (record.liters / record.distance * 100).toFixed(2) 
+    : '0.00';
+  
+  const fuelType = record.vehicleType === 'ديزل' ? 'ديزل' : 'بنزين';
+  const fuelColor = fuelType === 'ديزل' ? '#059669' : '#dc2626';
+  
+  const html = `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="ar">
+    <head>
+      <meta charset="UTF-8">
+      <title>فاتورة صرف وقود - ${record.opId}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+        
+        /* إعادة تعيين الأنماط */
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
+        }
+        
+        body { 
+          font-family: 'Cairo', sans-serif; 
+          padding: 20mm 15mm; /* هوامش صغيرة للمحتوى */
+          background: white; 
+          color: #1e293b; 
+          font-size: 14px; /* حجم خط أكبر */
+          width: 210mm; /* عرض A4 */
+          min-height: 297mm; /* ارتفاع A4 */
+          line-height: 1.6;
+          margin: 0 auto;
+          position: relative;
+        }
+        
+        /* استعلام الطباعة - هوامش أقل */
+        @media print {
+          body {
+            padding: 15mm 10mm; /* هوامش أصغر للطباعة */
+          }
+        }
+        
+        /* الحاوية الرئيسية */
+        .invoice-container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* الخلفية الزخرفية */
+        .invoice-bg {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+          z-index: -1;
+        }
+        
+        /* الرأس - يأخذ مساحة أكبر */
+        .invoice-header {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          color: white;
+          padding: 25px 30px;
+          border-radius: 15px 15px 0 0;
+          margin-bottom: 25px;
+          text-align: center;
+          box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .invoice-header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 100%;
+          height: 100%;
+          background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2z' fill='%234f46e5' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+          opacity: 0.3;
+        }
+        
+        .company-logo {
+          max-width: 200px;
+          height: auto;
+          margin-bottom: 15px;
+          filter: brightness(0) invert(1);
+        }
+        
+        .invoice-title {
+          font-size: 28px;
+          font-weight: 900;
+          margin-bottom: 5px;
+          letter-spacing: -0.5px;
+        }
+        
+        .invoice-subtitle {
+          font-size: 16px;
+          opacity: 0.9;
+          font-weight: 500;
+        }
+        
+        /* معلومات الفاتورة */
+        .invoice-info {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+          margin-bottom: 25px;
+          padding: 20px;
+          background: #f8fafc;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
+        }
+        
+        .info-item {
+          text-align: center;
+        }
+        
+        .info-label {
+          font-size: 12px;
+          color: #64748b;
+          font-weight: 600;
+          margin-bottom: 5px;
+        }
+        
+        .info-value {
+          font-size: 16px;
+          font-weight: 800;
+          color: #1e293b;
+        }
+        
+        .invoice-id-badge {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          color: white;
+          padding: 10px 20px;
+          border-radius: 10px;
+          font-weight: 800;
+          font-size: 18px;
+          display: inline-block;
+          margin: 10px 0;
+          box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+        
+        /* تاريخ ووقت الفاتورة */
+        .invoice-datetime {
+          background: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          margin: 20px 0;
+          border: 2px solid #e2e8f0;
+          font-weight: 700;
+          color: #475569;
+        }
+        
+        .datetime-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .datetime-item i {
+          color: #4f46e5;
+          font-size: 18px;
+        }
+        
+        /* المحتوى الرئيسي */
+        .invoice-content {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 25px;
+          margin-bottom: 30px;
+          flex: 1;
+        }
+        
+        .content-section {
+          background: white;
+          padding: 25px;
+          border-radius: 15px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+          font-size: 18px;
+          font-weight: 800;
+          color: #1e293b;
+          margin-bottom: 20px;
+          padding-bottom: 10px;
+          border-bottom: 3px solid #4f46e5;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .section-title i {
+          color: #4f46e5;
+          font-size: 20px;
+        }
+        
+        .details-grid {
+          display: grid;
+          gap: 15px;
+        }
+        
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          border-bottom: 1px dashed #e2e8f0;
+        }
+        
+        .detail-row:last-child {
+          border-bottom: none;
+        }
+        
+        .detail-label {
+          color: #64748b;
+          font-weight: 600;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .detail-label i {
+          color: #4f46e5;
+          width: 20px;
+          text-align: center;
+        }
+        
+        .detail-value {
+          font-weight: 800;
+          color: #1e293b;
+          font-size: 15px;
+          text-align: left;
+        }
+        
+        /* بطاقات النتائج الهامة */
+        .results-section {
+          grid-column: span 2;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+          margin-top: 20px;
+        }
+        
+        .result-card {
+          padding: 25px;
+          border-radius: 15px;
+          text-align: center;
+          color: white;
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-card.total {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        
+        .result-card.gallons {
+          background: linear-gradient(135deg, #0891b2, #0e7490);
+        }
+        
+        .result-card.consumption {
+          background: linear-gradient(135deg, #059669, #047857);
+        }
+        
+        .result-title {
+          font-size: 16px;
+          font-weight: 700;
+          margin-bottom: 10px;
+          opacity: 0.9;
+        }
+        
+        .result-value {
+          font-size: 32px;
+          font-weight: 900;
+          margin: 10px 0;
+          letter-spacing: -1px;
+        }
+        
+        .result-unit {
+          font-size: 14px;
+          opacity: 0.9;
+        }
+        
+        /* ملاحظات */
+        .notes-section {
+          background: linear-gradient(135deg, #fef3c7, #fde68a);
+          padding: 25px;
+          border-radius: 15px;
+          margin: 25px 0;
+          border-right: 6px solid #f59e0b;
+          grid-column: span 2;
+        }
+        
+        .notes-title {
+          font-size: 18px;
+          font-weight: 800;
+          color: #92400e;
+          margin-bottom: 15px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        
+        .notes-content {
+          font-size: 15px;
+          color: #92400e;
+          line-height: 1.8;
+        }
+        
+        /* التوقيعات */
+        .signatures-section {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 25px;
+          margin-top: 30px;
+          padding-top: 30px;
+          border-top: 2px dashed #cbd5e1;
+        }
+        
+        .signature-box {
+          text-align: center;
+          padding: 25px;
+          background: #f8fafc;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
+        }
+        
+        .signature-title {
+          font-size: 16px;
+          font-weight: 800;
+          color: #4f46e5;
+          margin-bottom: 20px;
+        }
+        
+        .signature-line {
+          height: 2px;
+          background: #334155;
+          margin: 30px 0 15px;
+          position: relative;
+        }
+        
+        .signature-line::after {
+          content: '';
+          position: absolute;
+          top: -5px;
+          right: 50%;
+          transform: translateX(50%);
+          width: 12px;
+          height: 12px;
+          background: #4f46e5;
+          border-radius: 50%;
+        }
+        
+        .signature-name {
+          font-weight: 800;
+          color: #1e293b;
+          font-size: 15px;
+          margin-top: 10px;
+        }
+        
+        .signature-date {
+          font-size: 12px;
+          color: #64748b;
+          margin-top: 5px;
+        }
+        
+        /* التذييل */
+        .invoice-footer {
+          text-align: center;
+          padding: 25px;
+          background: #f8fafc;
+          border-radius: 0 0 15px 15px;
+          margin-top: 30px;
+          border-top: 2px solid #e2e8f0;
+        }
+        
+        .footer-text {
+          font-size: 14px;
+          color: #475569;
+          margin-bottom: 10px;
+          font-weight: 600;
+        }
+        
+        .footer-note {
+          font-size: 12px;
+          color: #94a3b8;
+        }
+        
+        /* زر الطباعة (للعرض فقط) */
+        .print-actions {
+          text-align: center;
+          margin-top: 40px;
+          padding: 20px;
+        }
+        
+        .print-btn {
+          padding: 15px 40px;
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 800;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+        }
+        
+        .print-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+        }
+        
+        /* إخفاء زر الطباعة عند الطباعة */
+        @media print {
+          .print-actions {
+            display: none;
+          }
+          
+          body {
+            padding: 10mm 5mm; /* هوامش أقل للطباعة */
+          }
+          
+          .invoice-header {
+            box-shadow: none;
+          }
+          
+          .result-card, .content-section, .signature-box {
+            box-shadow: none;
+            border: 1px solid #ddd;
+          }
+        }
+        
+        /* التأكد من أن المحتوى يملأ الصفحة */
+        .page-break {
+          page-break-inside: avoid;
+        }
+        
+        /* علامة مائية */
+        .watermark {
+          position: absolute;
+          top: 50%;
+          right: 50%;
+          transform: translate(50%, -50%) rotate(-45deg);
+          font-size: 120px;
+          font-weight: 900;
+          color: rgba(79, 70, 229, 0.05);
+          white-space: nowrap;
+          z-index: -1;
+          pointer-events: none;
+        }
+        
+        /* تحسينات الطباعة */
+        @page {
+          size: A4 portrait;
+          margin: 10mm 5mm;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-bg"></div>
+      <div class="watermark">${record.branch || 'شركة عاديات'}</div>
+      
+      <div class="invoice-container">
+        <!-- الرأس -->
+        <div class="invoice-header">
+          <img src="https://adiyatdist.com/wp-content/uploads/2024/12/logo-horizontal.png" alt="شعار الشركة" class="company-logo" onerror="this.style.display='none'">
+          <h1 class="invoice-title">فاتورة صرف وقود</h1>
+          <p class="invoice-subtitle">شركة عاديات للتسويق والتوزيع</p>
+          <div class="invoice-id-badge">رقم الفاتورة: ${record.opId}</div>
+        </div>
+        
+        <!-- معلومات الفاتورة -->
+        <div class="invoice-info">
+          <div class="info-item">
+            <div class="info-label">القسم</div>
+            <div class="info-value">${record.branch}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">اللوحة</div>
+            <div class="info-value">${record.plate}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">السائق</div>
+            <div class="info-value">${record.driver}</div>
+          </div>
+        </div>
+        
+        <!-- التاريخ والوقت -->
+        <div class="invoice-datetime">
+          <div class="datetime-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span>${displayDate(record.date)}</span>
+          </div>
+          <div class="datetime-item">
+            <i class="fas fa-clock"></i>
+            <span>${currentTime}</span>
+          </div>
+          <div class="datetime-item">
+            <i class="fas ${fuelType === 'ديزل' ? 'fa-oil-can' : 'fa-gas-pump'}"></i>
+            <span>نوع الوقود: ${fuelType}</span>
+          </div>
+        </div>
+        
+        <!-- المحتوى الرئيسي -->
+        <div class="invoice-content">
+          <!-- معلومات المركبة -->
+          <div class="content-section">
+            <h2 class="section-title"><i class="fas fa-car"></i> معلومات المركبة</h2>
+            <div class="details-grid">
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-hashtag"></i> رقم الفاتورة</span>
+                <span class="detail-value">${record.opId}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-building"></i> القسم</span>
+                <span class="detail-value">${record.branch}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-id-card"></i> اللوحة</span>
+                <span class="detail-value">${record.plate}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-user"></i> السائق</span>
+                <span class="detail-value">${record.driver}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-truck-pickup"></i> نوع المركبة</span>
+                <span class="detail-value">${record.vehicleType || 'بنزين'}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- تفاصيل الرحلة -->
+          <div class="content-section">
+            <h2 class="section-title"><i class="fas fa-route"></i> تفاصيل الرحلة</h2>
+            <div class="details-grid">
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-tachometer-alt"></i> العداد السابق</span>
+                <span class="detail-value">${fmt(record.prevOdometer, 0)} كم</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-tachometer-alt"></i> العداد الحالي</span>
+                <span class="detail-value">${fmt(record.newOdometer, 0)} كم</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-road"></i> المسافة المقطوعة</span>
+                <span class="detail-value">${fmt(record.distance, 1)} كم</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label"><i class="fas fa-chart-line"></i> معدل الاستهلاك</span>
+                <span class="detail-value">${consumptionRate} لتر/100كم</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- نتائج هامة -->
+          <div class="results-section">
+            <div class="result-card total">
+              <div class="result-title">المبلغ الإجمالي</div>
+              <div class="result-value">${fmt(record.totalCost, 2)}</div>
+              <div class="result-unit">جنيه مصري</div>
+            </div>
+            
+            <div class="result-card gallons">
+              <div class="result-title">التحويل إلى جالونات</div>
+              <div class="result-value">${gallons}</div>
+              <div class="result-unit">جالون</div>
+              <div style="font-size: 12px; margin-top: 10px; opacity: 0.8;">1 جالون = 4.546 لتر</div>
+            </div>
+            
+            <div class="result-card consumption">
+              <div class="result-title">اللترات المستهلكة</div>
+              <div class="result-value">${fmt(record.liters, 2)}</div>
+              <div class="result-unit">لتر</div>
+              <div style="font-size: 12px; margin-top: 10px; opacity: 0.8;">السعر: ${fmt(record.pricePerLiter, 2)} ج/لتر</div>
+            </div>
+          </div>
+          
+          <!-- ملاحظات -->
+          ${record.notes ? `
+            <div class="notes-section">
+              <h3 class="notes-title"><i class="fas fa-sticky-note"></i> ملاحظات هامة</h3>
+              <div class="notes-content">${record.notes}</div>
+            </div>
+          ` : ''}
+        </div>
+        
+        <!-- التوقيعات -->
+        <div class="signatures-section">
+          <div class="signature-box">
+            <div class="signature-title">توقيع السائق</div>
+            <div class="signature-line"></div>
+            <div class="signature-name">${record.driver}</div>
+            <div class="signature-date">${displayDate(record.date)}</div>
+          </div>
+          
+          <div class="signature-box">
+            <div class="signature-title">توقيع ضابط الحركة</div>
+            <div class="signature-line"></div>
+            <div class="signature-name">....................................</div>
+            <div class="signature-date">التاريخ: ${displayDate(record.date)}</div>
+          </div>
+          
+          <div class="signature-box">
+            <div class="signature-title">ختم الشركة</div>
+            <div class="signature-line"></div>
+            <div style="font-size: 12px; color: #64748b; margin-top: 15px;">
+              <i class="fas fa-check-circle" style="color: #059669; font-size: 24px; margin-bottom: 10px;"></i><br>
+              فاتورة معتمدة
+            </div>
+          </div>
+        </div>
+        
+        <!-- التذييل -->
+        <div class="invoice-footer">
+          <p class="footer-text">شكراً لتعاملكم مع شركة عاديات للتسويق والتوزيع</p>
+          <p class="footer-note">
+            <i class="fas fa-info-circle"></i> هذه وثيقة إلكترونية معتمدة - لا تحتاج إلى ختم<br>
+            تم إنشاء الفاتورة بواسطة النظام الآلي بتاريخ ${displayDate(record.date)} الساعة ${currentTime}
+          </p>
+          <p style="font-size: 11px; color: #cbd5e1; margin-top: 15px;">
+            رقم المرجع: ${record.opId} | الإصدار: 1.0 | الصفحة: 1/1
+          </p>
+        </div>
+      </div>
+      
+      <!-- زر الطباعة (يظهر فقط في المعاينة) -->
+      <div class="print-actions">
+        <button class="print-btn" onclick="window.print()">
+          <i class="fas fa-print"></i> طباعة الفاتورة
+        </button>
+      </div>
+      
+      <script>
+        ${autoPrint ? `
+          window.onload = function() {
+            setTimeout(() => {
+              window.print();
+              setTimeout(() => {
+                window.close();
+              }, 1500);
+            }, 1000);
+          };
+        ` : ''}
+        
+        // تحسين تجربة الطباعة
+        document.addEventListener('DOMContentLoaded', function() {
+          // إضافة تأثيرات بصرية
+          const sections = document.querySelectorAll('.content-section, .result-card, .signature-box');
+          sections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+              section.style.transition = 'all 0.6s ease';
+              section.style.opacity = '1';
+              section.style.transform = 'translateY(0)';
+            }, index * 100);
+          });
+          
+          // إعداد الطباعة
+          window.addEventListener('beforeprint', function() {
+            document.body.classList.add('printing');
+          });
+          
+          window.addEventListener('afterprint', function() {
+            document.body.classList.remove('printing');
+          });
+        });
+      <\/script>
+    </body>
+    </html>
+  `;
+  
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+}   
+    // ========== وظائف إدارة المستخدمين المعدلة ==========
+
+    function openUserModal(userId = null) {
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      
+      const modal = $('userModal');
+      const title = $('userModalTitle');
+      
+      // إعادة تعيين النموذج
+      $('userForm').reset();
+      
+      // تعيين تاريخ الانتهاء الافتراضي (سنة من الآن)
+      const expiryDate = new Date();
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+      $('userExpiryDate').value = expiryDate.toISOString().slice(0, 10);
+      
+      if (userId) {
+        // وضع التعديل
+        title.textContent = 'تعديل بيانات المستخدم';
+        currentEditingUserId = userId;
+        isEditingUser = true;
+        
+        // تحميل بيانات المستخدم
+        firestore.collection('users').doc(userId).get().then(doc => {
+          if (doc.exists) {
+            const userData = doc.data();
+            $('userName').value = userData.name || '';
+            $('userEmail').value = userData.email || '';
+            $('userPhone').value = userData.phone || '';
+            $('userRole').value = userData.role || 'مستخدم';
+            $('userBranch').value = userData.branch || 'الخرطوم';
+            $('userExpiryDate').value = userData.expiryDate || '';
+            $('userStatus').value = userData.status || 'active';
+            
+            // تعيين الصلاحيات
+            const permissions = userData.permissions || {};
+            $('permManageVehicles').checked = permissions.manageVehicles || false;
+            $('permDispenseFuel').checked = permissions.dispenseFuel || false;
+            $('permViewReports').checked = permissions.viewReports || false;
+            $('permManageUsers').checked = permissions.manageUsers || false;
+          }
+        }).catch(error => {
+          console.error('Error loading user data:', error);
+          showAlert('حدث خطأ أثناء تحميل بيانات المستخدم', 'error');
+        });
+      } else {
+        // وضع الإضافة
+        title.textContent = 'إضافة مستخدم جديد';
+        currentEditingUserId = null;
+        isEditingUser = false;
+        
+        // تعيين الصلاحيات الافتراضية
+        $('permManageVehicles').checked = true;
+        $('permDispenseFuel').checked = true;
+        $('permViewReports').checked = true;
+        $('permManageUsers').checked = false;
+      }
+      
+      show(modal);
+    }
+
+    function closeUserModal() {
+      hide($('userModal'));
+      currentEditingUserId = null;
+      isEditingUser = false;
+    }
+
+    async function saveUser(e) {
+      if (e) e.preventDefault();
+      
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      
+      const userName = $('userName').value.trim();
+      const userEmail = $('userEmail').value.trim();
+      const userPassword = $('userPassword').value;
+      const userPhone = $('userPhone').value.trim();
+      const userRole = $('userRole').value;
+      const userBranch = $('userBranch').value;
+      const userExpiryDate = $('userExpiryDate').value;
+      const userStatus = $('userStatus').value;
+      
+      // الصلاحيات
+      const permissions = {
+        manageVehicles: $('permManageVehicles').checked,
+        dispenseFuel: $('permDispenseFuel').checked,
+        viewReports: $('permViewReports').checked,
+        manageUsers: $('permManageUsers').checked
+      };
+      
+      // التحقق من الحقول
+      if (!userName || !userEmail) {
+        showAlert('يرجى ملء الحقول المطلوبة', 'error');
+        return;
+      }
+      
+      // التحقق من صحة البريد الإلكتروني
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userEmail)) {
+        showAlert('البريد الإلكتروني غير صالح، يرجى إدخال بريد إلكتروني صحيح', 'error');
+        return;
+      }
+      
+      // في حالة الإضافة، يجب إدخال كلمة المرور
+      if (!isEditingUser && !userPassword) {
+        showAlert('يرجى إدخال كلمة المرور', 'error');
+        return;
+      }
+      
+      // التحقق من قوة كلمة المرور
+      if (userPassword && userPassword.length < 6) {
+        showAlert('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+        return;
+      }
+      
+      try {
+        if (isEditingUser && currentEditingUserId) {
+          // تحديث مستخدم موجود
+          const updateData = {
+            name: userName,
+            email: userEmail,
+            phone: userPhone,
+            role: userRole,
+            branch: userBranch,
+            expiryDate: userExpiryDate,
+            status: userStatus,
+            permissions: permissions,
+            updatedAt: new Date().toISOString()
+          };
+          
+          // تحديث كلمة المرور فقط إذا تم إدخالها
+          if (userPassword) {
+            updateData.password = userPassword;
+          }
+          
+          await firestore.collection('users').doc(currentEditingUserId).update(updateData);
+          showAlert('تم تحديث بيانات المستخدم بنجاح', 'success');
+        } else {
+          // إضافة مستخدم جديد
+          const newUser = {
+            name: userName,
+            email: userEmail,
+            phone: userPhone,
+            role: userRole,
+            branch: userBranch,
+            expiryDate: userExpiryDate,
+            status: userStatus,
+            permissions: permissions,
+            password: userPassword,
+            createdAt: new Date().toISOString()
+          };
+          
+          try {
+            // إنشاء حساب في Firebase Auth
+            const userCredential = await auth.createUserWithEmailAndPassword(userEmail, userPassword);
+            const userId = userCredential.user.uid;
+            
+            // حفظ بيانات المستخدم في Firestore
+            await firestore.collection('users').doc(userId).set(newUser);
+            
+            showAlert('تم إضافة المستخدم بنجاح', 'success');
+          } catch (authError) {
+            // التعامل مع أخطاء المصادقة المحددة
+            let errorMessage = '';
+            
+            switch (authError.code) {
+              case 'auth/email-already-in-use':
+                errorMessage = 'البريد الإلكتروني مستخدم بالفعل، يرجى استخدام بريد إلكتروني آخر';
+                break;
+              case 'auth/invalid-email':
+                errorMessage = 'البريد الإلكتروني غير صالح';
+                break;
+              case 'auth/weak-password':
+                errorMessage = 'كلمة المرور ضعيفة جداً، يرجى استخدام كلمة مرور أقوى (6 أحرف على الأقل)';
+                break;
+              case 'auth/operation-not-allowed':
+                errorMessage = 'إنشاء الحسابات غير مسموح به حالياً، يرجى التواصل مع المدير';
+                break;
+              default:
+                errorMessage = `حدث خطأ أثناء إنشاء الحساب: ${authError.message}`;
+            }
+            
+            showAlert(errorMessage, 'error');
+            return; // إيقاف العملية
+          }
+        }
+        
+        closeUserModal();
+        loadUsersList();
+        
+      } catch (error) {
+        console.error('Error saving user:', error);
+        
+        // التعامل مع أخطاء Firestore
+        let errorMessage = 'حدث خطأ أثناء حفظ بيانات المستخدم';
+        
+        if (error.code === 'permission-denied') {
+          errorMessage = 'لا تملك صلاحية إنشاء مستخدمين جدد';
+        } else if (error.code === 'not-found') {
+          errorMessage = 'المستخدم المحدد غير موجود';
+        } else if (error.code === 'already-exists') {
+          errorMessage = 'المستخدم موجود بالفعل';
+        }
+        
+        showAlert(errorMessage, 'error');
+      }
+    }
+
+    async function loadUsersList() {
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      
+      const tbody = $('usersTableBody');
+      tbody.innerHTML = '<tr id="loadingUsersRow"><td colspan="10"><div class="loader"><div class="spinner"></div><div style="margin-top: 0.5rem; color: var(--text-gray); font-size: var(--text-sm);">جاري تحميل المستخدمين...</div></td></tr>';
+      
+      try {
+        const snapshot = await firestore.collection('users').get();
+        allUsersCache = [];
+        
+        snapshot.forEach(doc => {
+          allUsersCache.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        
+        updateUsersStats(allUsersCache);
+        renderUsersTable(allUsersCache);
+        
+      } catch (error) {
+        console.error('Error loading users:', error);
+        showAlert('حدث خطأ أثناء تحميل بيانات المستخدمين', 'error');
+      }
+    }
+    
+    function updateUsersStats(users) {
+      const totalUsers = users.length;
+      const activeUsers = users.filter(user => user.status === 'active').length;
+      const managersCount = users.filter(user => user.role === 'مدير').length;
+      const supervisorsCount = users.filter(user => user.role === 'مشرف').length;
+      
+      $('totalUsers').textContent = totalUsers;
+      $('activeUsers').textContent = activeUsers;
+      $('managersCount').textContent = managersCount;
+      $('supervisorsCount').textContent = supervisorsCount;
+    }
+    
+    function renderUsersTable(users) {
+      const tbody = $('usersTableBody');
+      
+      if (users.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-gray);">
+              <div class="empty-state-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="empty-state-title">لا يوجد مستخدمون</div>
+              <div class="empty-state-description">ابدأ بإضافة أول مستخدم إلى النظام</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tbody.innerHTML = '';
+      
+      users.forEach((user, index) => {
+        let roleDisplay = user.role;
+        let roleIcon = 'fa-user-tie';
+        let roleColor = 'info';
+        
+        if (user.role === 'مدير') {
+          roleDisplay = 'مدير';
+          roleIcon = 'fa-user-cog';
+          roleColor = 'danger';
+        } else if (user.role === 'مشرف') {
+          roleDisplay = 'مشرف';
+          roleIcon = 'fa-user-shield';
+          roleColor = 'warning';
+        }
+        
+        let statusClass = 'badge-success';
+        let statusIcon = 'fa-check-circle';
+        let statusText = 'نشط';
+        
+        if (user.status === 'suspended') {
+          statusClass = 'badge-danger';
+          statusIcon = 'fa-pause-circle';
+          statusText = 'موقوف';
+        }
+        
+        // التحقق من صلاحية الحساب
+        let expiryClass = '';
+        let expiryText = displayDate(user.expiryDate) || 'غير محدد';
+        
+        if (user.expiryDate) {
+          const expiryDate = new Date(user.expiryDate);
+          const today = new Date();
+          
+          if (expiryDate < today) {
+            expiryClass = 'style="color: var(--danger); font-weight: 700;"';
+            expiryText += ' (منتهي)';
+          } else if (expiryDate < new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)) {
+            expiryClass = 'style="color: var(--warning); font-weight: 600;"';
+            expiryText += ' (قريب)';
+          }
+        }
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="user-avatar-small" style="width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;">
+                ${user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div>
+                <div style="font-weight: 700; color: var(--text-dark); font-size: var(--text-sm);">${user.name || 'غير محدد'}</div>
+                <div style="font-size: var(--text-xs); color: var(--text-gray);">ID: ${user.id.substring(0, 8)}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-sm); color: var(--text-dark);">${user.email || 'غير محدد'}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas ${roleIcon}" style="color: var(--${roleColor}); font-size: 14px;"></i>
+              <span class="badge badge-${roleColor}" style="font-size: var(--text-xs);">${roleDisplay}</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-primary" style="font-size: var(--text-xs);">${user.branch || 'غير محدد'}</span>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-phone" style="color: var(--info); font-size: 12px;"></i>
+              <span style="font-size: var(--text-sm); color: var(--text-dark);">${user.phone || 'غير محدد'}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas ${statusIcon}" style="color: var(--${statusClass === 'badge-success' ? 'success' : 'danger'}); font-size: 12px;"></i>
+              <span class="badge ${statusClass}" style="font-size: var(--text-xs);">${statusText}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-sm); color: var(--text-dark);">${displayDate(user.createdAt)}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-size: var(--text-sm); color: var(--text-dark);" ${expiryClass}>${expiryText}</span>
+            </div>
+          </td>
+          <td class="no-print">
+            <div style="display: flex; gap: 0.25rem;">
+              <button class="btn btn-sm btn-primary" 
+                      onclick="openUserModal('${user.id}')"
+                      style="padding: 4px 6px; font-size: 10px;"
+                      title="تعديل المستخدم">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" 
+                      onclick="deleteUser('${user.id}', '${user.name}')"
+                      style="padding: 4px 6px; font-size: 10px;"
+                      title="حذف المستخدم">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(tr);
+      });
+    }
+    
+    function searchUsers(query) {
+      if (!query) {
+        renderUsersTable(allUsersCache);
+        return;
+      }
+      
+      const filtered = allUsersCache.filter(user => 
+        (user.name && user.name.toLowerCase().includes(query.toLowerCase())) ||
+        (user.email && user.email.toLowerCase().includes(query.toLowerCase())) ||
+        (user.role && user.role.toLowerCase().includes(query.toLowerCase())) ||
+        (user.branch && user.branch.toLowerCase().includes(query.toLowerCase())) ||
+        (user.phone && user.phone.includes(query))
+      );
+      
+      renderUsersTable(filtered);
+    }
+    
+    function filterUsers(filter) {
+      let filtered = allUsersCache;
+      
+      if (filter !== 'all') {
+        if (['مدير', 'مشرف', 'مستخدم'].includes(filter)) {
+          filtered = allUsersCache.filter(user => user.role === filter);
+        } else if (filter === 'active') {
+          filtered = allUsersCache.filter(user => user.status === 'active');
+        } else if (filter === 'suspended') {
+          filtered = allUsersCache.filter(user => user.status === 'suspended');
+        }
+      }
+      
+      renderUsersTable(filtered);
+    }
+    
+    async function deleteUser(userId, userName) {
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      
+      if (!confirm(`هل أنت متأكد من حذف المستخدم "${userName}"؟`)) {
+        return;
+      }
+      
+      try {
+        // حذف المستخدم من Firebase Auth
+        await auth.deleteUser(userId);
+        
+        // حذف بيانات المستخدم من Firestore
+        await firestore.collection('users').doc(userId).delete();
+        
+        showAlert('تم حذف المستخدم بنجاح', 'success');
+        loadUsersList();
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        showAlert('حدث خطأ أثناء حذف المستخدم', 'error');
+      }
+    }
+    
+    function exportUsersToExcel() {
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      
+      if (allUsersCache.length === 0) {
+        showAlert('لا توجد بيانات للتصدير', 'warning');
+        return;
+      }
+      
+      // إنشاء CSV
+      let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+      
+      // رأس الملف
+      const headers = [
+        'الرقم',
+        'الاسم',
+        'البريد الإلكتروني',
+        'الدور',
+        'القسم',
+        'الهاتف',
+        'الحالة',
+        'تاريخ التسجيل',
+        'تاريخ الانتهاء',
+        'صلاحية إدارة المركبات',
+        'صلاحية صرف الوقود',
+        'صلاحية عرض التقارير',
+        'صلاحية إدارة المستخدمين'
+      ].join(',');
+      
+      csvContent += headers + '\r\n';
+      
+      // البيانات
+      allUsersCache.forEach((user, index) => {
+        const permissions = user.permissions || {};
+        const row = [
+          index + 1,
+          user.name || '',
+          user.email || '',
+          user.role || '',
+          user.branch || '',
+          user.phone || '',
+          user.status === 'active' ? 'نشط' : 'موقوف',
+          displayDate(user.createdAt),
+          displayDate(user.expiryDate),
+          permissions.manageVehicles ? 'نعم' : 'لا',
+          permissions.dispenseFuel ? 'نعم' : 'لا',
+          permissions.viewReports ? 'نعم' : 'لا',
+          permissions.manageUsers ? 'نعم' : 'لا'
+        ].join(',');
+        
+        csvContent += row + '\r\n';
+      });
+      
+      // تنزيل الملف
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `مستخدمين_نظام_الوقود_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showAlert('تم تصدير بيانات المستخدمين بنجاح', 'success');
+    }
+    
+    function printUsers() {
+      if (!checkIfCanManageUsers()) {
+        showPermissionError('manageUsers');
+        return;
+      }
+      showAlert('جاري تحضير الطباعة...', 'info');
+    }
+    
+    function changeUsersPage(direction) {
+      showAlert('تغيير الصفحة قيد التطوير', 'info');
+    }
+
+    // ========== وظائف مساعدة ==========
+
+    // وظيفة للحصول على إعداد معين
+    async function getSetting(settingName) {
+      try {
+        const doc = await firestore.collection('settings').doc('appSettings').get();
+        if (doc.exists) {
+          const settings = doc.data();
+          return settings[settingName];
+        }
+        return null;
+      } catch (error) {
+        console.error('Error getting setting:', error);
+        return null;
+      }
+    }
+    
+  </script>
+</body>
+</html>
